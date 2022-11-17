@@ -1,0 +1,56 @@
+.topSection{
+    background-color: white;
+    height: 300px;
+    position: relative;
+    margin-bottom: 10px;
+    z-index: 0;
+}
+
+
+.mainInfo{
+    background-color: orange;
+    height: 250px;
+}
+.infoSection{
+    position: absolute;
+    z-index: 0;
+    bottom: 50px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.additionalInfoSection{
+    position: absolute;
+    bottom: 10px;
+    left: 5px;
+    right: 5px;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 150px;
+}
+.infoRight{
+    display: flex;
+    justify-content: space-between;
+}
+.infoRight button{
+    margin-right: 20px;
+    color: black;
+}
+.infoLeft div{
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 10px;
+    justify-content: left;
+    margin-left: 170px;
+}
+.infoLeft div span{
+    color: white;
+    margin-right: 10px;
+}
+.infoLeft img{
+    position: absolute;
+    bottom: -30px;
+}

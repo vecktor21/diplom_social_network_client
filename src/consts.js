@@ -1,0 +1,22 @@
+export default  {
+    MAIN_ROUTE: "/*",
+    AUTH_ROUTE: "/auth",
+    ADMIN_ROUTE: "/admin",
+    USER_PAGE_ROUTE: "/user",
+    IMAGES_PAGE_ROUTE: "/images",
+    DOCUMENTS_PAGE_ROUTE: "/documents",
+    VIDEOS_PAGE_ROUTE: "/videos",
+    MESSAGES_ROUTE: "/messages",
+    CHAT_ROOM_ROUTE: "/chatroom",
+    FRIENDS_ROUTE: "/user/friends",
+    USER_OPTIONS_ROUTE: "/user/options",
+    USER_BLACK_LIST_ROUTE: "/user/banned",
+    GROUPS_ROUTE: "/groups",
+    GROUP_ROUTE: "/group",
+    GROUP_BLACK_LIST_ROUTE: "/group/banned",
+    USER_ARTICLES_ROUTE: "/articles",
+    ARTICLE_ROUTE: "/article/:articleId/:page",
+    ARTICLES_ROUTE: "/articles",
+    POST_ROUTE: "/post",
+    API_URL: "https://localhost:7021"
+};

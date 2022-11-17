@@ -1,0 +1,47 @@
+.post{
+    background-color: white;
+    margin-bottom: 10px;
+    padding: 40px;
+}
+
+.authorInfo{
+    display: flex;
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 10px;
+    position: relative;
+}
+.authorInfo div:last-child{
+    position: relative;
+    top: 5px;
+    left: 20px;
+    color: black;
+    font-weight: bold;
+}
+.date{
+    position: absolute;
+    left: 90px;
+    bottom: 20px;
+
+}
+.title{
+    font-weight: bold;
+    font-size: 20px;
+    padding: 10px 0;
+
+}
+.text{
+    font-size: 20px;
+    padding: 10px 0;
+
+}
+.images{
+
+}
+.bottomSection{
+    border-top: 2px solid lightgray;
+    margin-top: 10px;
+    display: flex;
+    font-size: 20px;
+    justify-content: space-between;
+
+}

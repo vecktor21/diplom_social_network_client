@@ -1,0 +1,28 @@
+.navbar{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 0;
+    left: 50px;
+    top: 100px;
+}
+.navbar li{
+    box-sizing: border-box;
+    margin-bottom: 2px;
+}
+.navbar span{
+    padding: 5px 5px 5px 30px;
+    text-decoration: none;
+    display: block;
+    border-left: 5px solid #b2b5b8;
+    cursor: pointer;
+}
+.navbar span:hover{
+    border-left: 5px solid #7ea1cc;;
+    color: #7ea1cc;
+}
+.active{
+    border-left: 5px solid #4d6da9 !important;
+    color: #4d6da9;
+}

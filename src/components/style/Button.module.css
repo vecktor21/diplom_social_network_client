@@ -1,0 +1,28 @@
+.button{
+    outline: none;
+    border: 1px solid #e1e3ea;
+    background-color: #ebedf4;
+    color: #b2b5b8;
+    transition: 0.1s all ease;
+    border-radius: 2px;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #789ac3;
+    display: inline-block;
+    max-height: 30px;
+}
+
+.button:hover{
+    outline: none;
+    border: 1px solid #789ac3;
+    background-color: #7ea1cc;
+    color: #d4d7db;
+
+}
+
+.button:active{
+    border: 1px solid #6a78b2;
+    background-color: #6f7ebb;
+    color: #e1e5e9;
+
+}

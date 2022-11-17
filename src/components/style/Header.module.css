@@ -1,0 +1,35 @@
+.header{
+    background-color: #4d6da9;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    font-size: 20px;
+    box-sizing: content-box;
+    display: flex;
+    align-items: center;
+    z-index: 11;
+}
+.content{
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    align-items: center;
+}
+.profileBlock{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+.profileBlock *{
+    margin-left: 10px;
+    /*color: #7ea1cc;*/
+    color: #8CB2F6;
+}
+.profileImage{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}

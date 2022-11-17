@@ -1,0 +1,20 @@
+.fileObject{
+    max-width: 30%;
+    max-height: 200px;
+    background-color: lightgray;
+    padding: 5px;
+    margin: 20px 10px;
+    box-sizing: border-box;
+}
+.fileObject img{
+    max-height: 90px;
+}
+.fileName{
+    color: blue;
+    text-decoration: underline;
+    display: flex;
+    justify-content: space-between;
+}
+.fileName *{
+    cursor: pointer;
+}
