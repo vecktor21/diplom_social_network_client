@@ -10,6 +10,7 @@ export default class PostService{
             postId: postId,
             title: "title",
             text: "text",
+            postType: "user",
             publicationDate: new Date("2022-10-27"),
             author: {
                 name: "Some Author",
@@ -49,7 +50,6 @@ export default class PostService{
                     message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab atque deleniti dicta doloremque explicabo harum id ipsam itaque, nihil nostrum odit sequi velit. Ex, explicabo maiores nobis numquam odit vitae.",
                     objectId: 0,
                     objectName: "post",
-                    postId: 0,
                     isReply: false,
                     attachment: {
                         attachmentId: 10,
@@ -83,7 +83,6 @@ export default class PostService{
                             message: "reply message",
                             objectId: 0,
                             objectName: "Denis",
-                            postId: 0,
                             isReply: true,
                             attachment: {
                                 attachmentId: 10,
@@ -117,7 +116,6 @@ export default class PostService{
                                     message: "reply message",
                                     objectId: 312,
                                     objectName: "Kirill",
-                                    postId: 0,
                                     isReply: true,
                                     attachment: {
                                         attachmentId: 10,
@@ -152,7 +150,6 @@ export default class PostService{
                                     message: "another reply message",
                                     objectId: 312,
                                     objectName: "Kirill",
-                                    postId: 0,
                                     isReply: true,
                                     attachment: {
                                         attachmentId: 10,
@@ -189,7 +186,6 @@ export default class PostService{
                             message: "another reply message",
                             objectId: 0,
                             objectName: "Denis",
-                            postId: 0,
                             isReply: true,
                             attachment: {
                                 attachmentId: 10,
@@ -226,7 +222,6 @@ export default class PostService{
                     message: "message",
                     objectId: 0,
                     objectName: "post",
-                    postId: 0,
                     isReply: false,
                     attachment: {
                         attachmentId: 10,
@@ -260,7 +255,6 @@ export default class PostService{
                             message: "reply message",
                             objectId: 2,
                             objectName: "Артем",
-                            postId: 0,
                             isReply: true,
                             attachment: {
                                 attachmentId: 10,
@@ -294,7 +288,6 @@ export default class PostService{
                                     message: "reply message",
                                     objectId: 4124123,
                                     objectName: "Вадим",
-                                    postId: 0,
                                     isReply: true,
                                     attachment: {
                                         attachmentId: 10,
@@ -329,7 +322,6 @@ export default class PostService{
                                     message: "another reply message",
                                     objectId: 4124123,
                                     objectName: "Николай",
-                                    postId: 0,
                                     isReply: true,
                                     attachment: {
                                         attachmentId: 10,
@@ -366,7 +358,6 @@ export default class PostService{
                             message: "another reply message",
                             objectId: 2,
                             objectName: "Жмых",
-                            postId: 0,
                             isReply: true,
                             attachment: {
                                 attachmentId: 10,
@@ -403,7 +394,6 @@ export default class PostService{
                     message: "message",
                     objectId: 0,
                     objectName: "post",
-                    postId: 0,
                     isReply: false,
                     attachment: {
                         attachmentId: 10,
@@ -437,7 +427,6 @@ export default class PostService{
                             message: "reply message",
                             objectId: 3,
                             objectName: "Артурчик",
-                            postId: 0,
                             isReply: true,
                             attachment: {
                                 attachmentId: 10,
@@ -471,7 +460,6 @@ export default class PostService{
                                     message: "reply message",
                                     objectId: 54345435325234547657435,
                                     objectName: "Влад",
-                                    postId: 3,
                                     isReply: true,
                                     attachment: {
                                         attachmentId: 10,
@@ -506,7 +494,6 @@ export default class PostService{
                                     message: "another reply message",
                                     objectId: 54345435325234547657435,
                                     objectName: "Николай",
-                                    postId: 0,
                                     isReply: true,
                                     attachment: {
                                         attachmentId: 10,
@@ -543,7 +530,6 @@ export default class PostService{
                             message: "another reply message",
                             objectId: 3,
                             objectName: "Нур султан",
-                            postId: 0,
                             isReply: true,
                             attachment: {
                                 attachmentId: 10,
@@ -575,19 +561,6 @@ export default class PostService{
             ]
         }
     }
-/*
-    static GetAuthorInfo(postId: number, authorType : string) : IAuthorInfo{
-        if(authorType == "GROUP"){
-            return {
-                Name: "SomeGroup",
-                Img: "./src/Placeholders/imgPlaceholder.png"
-            }
-        }
-        return {
-            Name: "Some User",
-            Img: "./src/Placeholders/imgPlaceholder.png"
-        }
-    }*/
 
     static IterateComments(comment: IComment) : ReactNode {
         if(comment.replies.length == 0){
