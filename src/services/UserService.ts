@@ -16,6 +16,7 @@ import {ICountry} from "../types/ICountry";
 import {IUserInfoPrivacyType} from "../types/IUserInfoPrivacyType";
 import api from "./AxiosService";
 import consts from "../consts";
+import {GlobalService} from "./GlobalService";
 
 export default class UserService {
     static async GetUser(userId: number){
@@ -65,14 +66,12 @@ export default class UserService {
         ]
     }
 
-    static GetUserPosts(userId: number) : IPost[] {
-        const posts = [] as IPost[]
-        for (let i = 1; i < 5; i++){
-            var post = PostService.GetPost(i)
-            post.publicationDate.setDate(post.publicationDate.getDate()+i)
-            posts.push(post)
-        }
-        return posts
+    static async GetUserPosts(userId: number) {
+        const result = await api.get<IPost[]>(`/api/Post/user/GetUserPosts/${userId}`)
+        result.data.forEach(post=>{
+            post.publicationDate = GlobalService.JsonDateStringToDateObj(post.publicationDate)
+        })
+        return result
     }
     static async GetUserGroups(userId: number){
         return await api.get<IGroup[]>(`${consts.API_URL}/api/Group/getUserGroups/${userId}`);

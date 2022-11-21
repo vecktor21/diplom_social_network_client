@@ -27,6 +27,8 @@ import ErrorComponent from "../UI/ErrorComponent";
 import {log} from "util";
 import FileService from "../../services/FileService";
 import FileUploadComponent from "../UI/FileUploadComponent";
+import {IAttachment} from "../../types/IAttachment";
+import {IComment} from "../../types/IComment";
 
 const UserPage = observer(() => {
     //пользователь, на странице которого находимся
@@ -164,14 +166,26 @@ const UserPage = observer(() => {
 
     //загрузка постов
     const fetchPosts = async()=>{
-        const postResult = UserService.GetUserPosts(id)
-        setUserPosts(postResult)
+        try {
+            setIsLoading(true)
+            const postResult = await UserService.GetUserPosts(id)
+            await setUserPosts(postResult.data)
+        }catch (e) {
+            setIsError(true)
+        }
+        setIsLoading(false)
     }
 
     //загрузка файлов пользователя
     const fetchUserFiles = async ()=>{
-        const fileResult = await FileService.GetUserFiles(id)
-        setUserFiles(fileResult.data)
+        try {
+            setIsLoading(true)
+            const fileResult = await FileService.GetUserFiles(id)
+            setUserFiles(fileResult.data)
+        }catch (e) {
+            setIsError(true)
+        }
+        setIsLoading(false)
     }
 
     //todo
@@ -349,9 +363,14 @@ const UserPage = observer(() => {
                                     </div>
                                 }
                                 {
-                                    userPosts.map(post=>
-                                        <PostComponent  post={post} key={post.postId}/>
-                                    )
+                                    userPosts.length == 0
+                                    ?
+                                        <div>еще нет постов</div>
+                                    :
+
+                                        userPosts.map(post=>
+                                            <PostComponent  post={post} key={post.postId}/>
+                                        )
                                 }
                             </div>
                         }

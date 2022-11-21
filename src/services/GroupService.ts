@@ -6,18 +6,20 @@ import consts from "../consts";
 import {ICreateGroupModel} from "../types/ICreateGroupModel";
 import {GroupBelonging} from "../types/GroupBelonging";
 import {IRequestToGroup} from "../types/IRequestToGroup";
+import {GlobalService} from "./GlobalService";
 export default class GroupService {
     static async GetGroup(groupId: number) {
         const response = await api.get<IGroup>(`${consts.API_URL}/api/group/${groupId}`)
         return response
     }
-    static GetPosts(groupId: number) : IPost[]{
-        const posts = [] as IPost[]
-        for (let i = 1; i < 5; i++){
-            posts.push(PostService.GetPost(i))
-        }
-        return posts
+    static async GetPosts(groupId: number){
+        const result = await api.get<IPost[]>(`/api/Post/group/GetGroupPosts/${groupId}`)
+        result.data.forEach(post=>{
+            post.publicationDate = GlobalService.JsonDateStringToDateObj(post.publicationDate)
+        })
+        return result
     }
+
     static async FindGroups(search: string){
         return await api.get<IGroup[]>(`${consts.API_URL}/api/group/FindGroups?search=${search}`);
     }

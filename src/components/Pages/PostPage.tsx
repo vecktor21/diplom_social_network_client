@@ -107,9 +107,9 @@ const PostPage = observer(() => {
                                 </div>
                                 <div className={postStyle.date}>
                                     дата публикации:
-                                    {post.publicationDate.getFullYear()}.
+                                    {/*{post.publicationDate.getFullYear()}.
                                     {post.publicationDate.getMonth()+1}.
-                                    {post.publicationDate.getDate()}
+                                    {post.publicationDate.getDate()}*/}
                                 </div>
                                 <div>{post.author.name}</div>
                             </div>

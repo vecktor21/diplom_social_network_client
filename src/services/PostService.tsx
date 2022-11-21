@@ -11,7 +11,7 @@ export default class PostService{
             title: "title",
             text: "text",
             postType: "user",
-            publicationDate: new Date("2022-10-27"),
+            publicationDate: new Date(),
             author: {
                 name: "Some Author",
                 img: "https://via.placeholder.com/300x200",
@@ -38,7 +38,8 @@ export default class PostService{
                 {
                     attachmentId: 0,
                     fileLink: "https://via.placeholder.com/300x200",
-                    fileType: "Image"
+                    fileType: "Image",
+                    fileName: "file"
                 }
             ],
             comments: [
@@ -54,7 +55,8 @@ export default class PostService{
                     attachment: {
                         attachmentId: 10,
                         fileLink: "https://via.placeholder.com/150x200",
-                        fileType: "Image"
+                        fileType: "Image",
+                        fileName: "file"
                     },
                     likes: [
                         {
@@ -87,7 +89,8 @@ export default class PostService{
                             attachment: {
                                 attachmentId: 10,
                                 fileLink: "https://via.placeholder.com/150x200",
-                                fileType: "Image"
+                                fileType: "Image",
+                                fileName: "file"
                             },
                             likes: [
                                 {
@@ -120,7 +123,8 @@ export default class PostService{
                                     attachment: {
                                         attachmentId: 10,
                                         fileLink: "https://via.placeholder.com/150x200",
-                                        fileType: "Image"
+                                        fileType: "Image",
+                                        fileName: "file"
                                     },
                                     likes: [
                                         {
@@ -154,7 +158,8 @@ export default class PostService{
                                     attachment: {
                                         attachmentId: 10,
                                         fileLink: "https://via.placeholder.com/150x200",
-                                        fileType: "Image"
+                                        fileType: "Image",
+                                        fileName: "file"
                                     },
                                     likes: [
                                         {
@@ -190,7 +195,8 @@ export default class PostService{
                             attachment: {
                                 attachmentId: 10,
                                 fileLink: "https://via.placeholder.com/150x200",
-                                fileType: "Image"
+                                fileType: "Image",
+                                fileName: "file"
                             },
                             likes: [
                                 {
@@ -226,7 +232,8 @@ export default class PostService{
                     attachment: {
                         attachmentId: 10,
                         fileLink: "https://via.placeholder.com/150x200",
-                        fileType: "Image"
+                        fileType: "Image",
+                        fileName: "file"
                     },
                     likes: [
                         {
@@ -259,7 +266,8 @@ export default class PostService{
                             attachment: {
                                 attachmentId: 10,
                                 fileLink: "https://via.placeholder.com/150x200",
-                                fileType: "Image"
+                                fileType: "Image",
+                                fileName: "file"
                             },
                             likes: [
                                 {
@@ -292,7 +300,8 @@ export default class PostService{
                                     attachment: {
                                         attachmentId: 10,
                                         fileLink: "https://via.placeholder.com/150x200",
-                                        fileType: "Image"
+                                        fileType: "Image",
+                                        fileName: "file"
                                     },
                                     likes: [
                                         {
@@ -326,7 +335,8 @@ export default class PostService{
                                     attachment: {
                                         attachmentId: 10,
                                         fileLink: "https://via.placeholder.com/150x200",
-                                        fileType: "Image"
+                                        fileType: "Image",
+                                        fileName: "file"
                                     },
                                     likes: [
                                         {
@@ -362,7 +372,8 @@ export default class PostService{
                             attachment: {
                                 attachmentId: 10,
                                 fileLink: "https://via.placeholder.com/150x200",
-                                fileType: "Image"
+                                fileType: "Image",
+                                fileName: "file"
                             },
                             likes: [
                                 {
@@ -398,7 +409,8 @@ export default class PostService{
                     attachment: {
                         attachmentId: 10,
                         fileLink: "https://via.placeholder.com/150x200",
-                        fileType: "Image"
+                        fileType: "Image",
+                        fileName: "file"
                     },
                     likes: [
                         {
@@ -431,7 +443,8 @@ export default class PostService{
                             attachment: {
                                 attachmentId: 10,
                                 fileLink: "https://via.placeholder.com/150x200",
-                                fileType: "Image"
+                                fileType: "Image",
+                                fileName: "file"
                             },
                             likes: [
                                 {
@@ -464,7 +477,8 @@ export default class PostService{
                                     attachment: {
                                         attachmentId: 10,
                                         fileLink: "https://via.placeholder.com/150x200",
-                                        fileType: "Image"
+                                        fileType: "Image",
+                                        fileName: "file"
                                     },
                                     likes: [
                                         {
@@ -498,7 +512,8 @@ export default class PostService{
                                     attachment: {
                                         attachmentId: 10,
                                         fileLink: "https://via.placeholder.com/150x200",
-                                        fileType: "Image"
+                                        fileType: "Image",
+                                        fileName: "file"
                                     },
                                     likes: [
                                         {
@@ -534,7 +549,8 @@ export default class PostService{
                             attachment: {
                                 attachmentId: 10,
                                 fileLink: "https://via.placeholder.com/150x200",
-                                fileType: "Image"
+                                fileType: "Image",
+                                fileName: "file"
                             },
                             likes: [
                                 {
@@ -575,5 +591,7 @@ export default class PostService{
         )
         }
     }
+
+
 
 }

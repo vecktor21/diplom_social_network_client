@@ -18,10 +18,10 @@ const MainPage = observer(() => {
     const [isLoading, setIsLoading] = useState(true)
     const {userStore} = useContext(Context)
     const [isLogged, setIsLogged] = useState(false)
-    const [userFriends, setUserFriends] = useState([] as IFriend[])
-    const [userGroups, setUserGroups] = useState([] as IGroup[])
-    useEffect(()=>{
+    const [isError, setIsError] = useState(false)
 
+    useEffect(()=>{
+        fetchData()
 
     }, [])
 
@@ -31,29 +31,45 @@ const MainPage = observer(() => {
             const tempPosts = [] as IPost[]
 
             FriendsService.GetFriends(userStore.user.userId).then(response=>{
-                setUserFriends(response.data)
-                response.data.forEach(friend=>{
-                    const postResponse = UserService.GetUserPosts(friend.userId)
-                    tempPosts.push(...postResponse)
+                response.data.forEach(async(friend)=>{
+                    try {
+                        setIsLoading(true)
+                        const postResponse = await UserService.GetUserPosts(friend.userId)
+                        tempPosts.push(...postResponse.data)
+                    }catch (e) {
+                        setIsError(true)
+                        setIsLoading(false)
+                    }
                 })
-                setIsLoading(false)
             })
-            const groupResponse = await UserService.GetUserGroups(userStore.user.userId)
-            setUserGroups(groupResponse.data)
+
+            UserService.GetUserGroups(userStore.user.userId).then(response=>{
+                response.data.forEach(async(group)=>{
+                    try {
+                        setIsLoading(true)
+                        const postResponse = await GroupService.GetPosts(group.groupId)
+                        tempPosts.push(...postResponse.data)
+                    }catch (e) {
+                        setIsError(true)
+                        setIsLoading(false)
+                    }
+                    setIsLoading(false)
+                })
+            })
 
 
-            groupResponse.data.forEach(group=>{
-                const postResponse = GroupService.GetPosts(group.groupId)
-                tempPosts.push(...postResponse)
-            })
             tempPosts.sort((a,b)=>{
                 // @ts-ignore
                 return new Date(b.publicationDate.toDateString())-new Date(a.publicationDate.toDateString())
             })
             setPosts([...tempPosts])
+            setIsLoading(false)
         }
         setIsLoading(false)
     }
+
+
+    console.log(posts)
 
     //todo
     //настроить пагинацию (подгрузка постов при пролистовании)
@@ -74,9 +90,15 @@ const MainPage = observer(() => {
                     ?
                         <div>
                             {
-                                posts.map(post=>
-                                    <PostComponent key={Math.random()}  post={post} /*key={post.PostId}*//>
-                                )
+                                posts.length == 0
+                                ?
+                                    <div>
+                                        нет постов
+                                    </div>
+                                    :
+                                        posts.map(post=>
+                                            <PostComponent key={Math.random()}  post={post} /*key={post.PostId}*//>
+                                        )
                             }
                         </div>
                     :

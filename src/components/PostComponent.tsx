@@ -68,10 +68,13 @@ const PostComponent : FC<Props> = observer((props) => {
             return commentCount
         }
     }
+
+
     useEffect(()=>{
         props.post.comments.forEach(comment=>{
             iterateComments(comment)
         })
+
     }, [])
     useEffect(()=>setCommentCount(comments), [comments])
 
@@ -89,12 +92,12 @@ const PostComponent : FC<Props> = observer((props) => {
                 </div>
                 <div>{props.post.author.name}</div>
             </div>
-            ч<div className={post.title}>{props.post.title}</div>
+            <div className={post.title}>{props.post.title}</div>
             <div className={post.text}>{props.post.text}</div>
             <div className={post.images}>
-                {props.post.postAttachments.map((attachment, index) => (
+                {props.post.postAttachments.filter(att=>att.fileType=="image").map((attachment, index) => (
                     <img
-                        src={ attachment.fileLink }
+                        src={ consts.API_URL+ attachment.fileLink }
                         onClick={ () => openImageViewer(index) }
                         width="300"
                         key={ index }
@@ -109,6 +112,11 @@ const PostComponent : FC<Props> = observer((props) => {
                          onClose={ closeImageViewer }
                     />
                 }
+            </div>
+            <div>
+                {props.post.postAttachments.filter(att=>att.fileType!="image").map((attachment, index) => (
+                    <a key={attachment.attachmentId} href={consts.API_URL + attachment.fileLink}>{attachment.fileName}</a>
+                ))}
             </div>
             <div className={post.bottomSection}>
                 <div

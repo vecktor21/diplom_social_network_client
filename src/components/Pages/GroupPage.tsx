@@ -42,6 +42,8 @@ const GroupPage = observer(() => {
 
     const fetchGroup = async ()=>{
         if(id!=null){
+
+            //подгрузка инфы
             setIsLoading(true)
             const groupResponse = await GroupService.GetGroup(id)
             try{
@@ -55,12 +57,14 @@ const GroupPage = observer(() => {
                 setGroupBelonging(GroupBelongingResponse.data)
             }
 
+            //подгрузка файлов
             await fetchFiles()
 
-            setIsLoading(false)
+            //подгрузка постов
+            await fetchPosts()
 
-            const postResponse = GroupService.GetPosts(id)
-            setGroupPosts(postResponse)
+
+            setIsLoading(false)
         }else {
             setIsError(true)
         }
@@ -76,6 +80,20 @@ const GroupPage = observer(() => {
         }
 
     }
+
+    //загрузка постов
+    const fetchPosts = async()=>{
+        try {
+            setIsLoading(true)
+            const postResult = await GroupService.GetPosts(id)
+            await setGroupPosts(postResult.data)
+        }catch (e) {
+            setIsError(true)
+            setIsLoading(false)
+        }
+    }
+
+    //обработчик отписки
     const unsubscribe = ()=>{
         setIsLoading(true)
         // @ts-ignore
@@ -252,9 +270,13 @@ const GroupPage = observer(() => {
                             </div>
                         }
                         {
-                            groupPosts.map(post=>
-                                <PostComponent post={post} key={post.postId}/>
-                            )
+                            groupPosts.length == 0
+                                ?
+                                <div>здесь еще нет записей</div>
+                                :
+                                groupPosts.map(post=>
+                                    <PostComponent post={post} key={post.postId}/>
+                                )
                         }
                     </div>
 
