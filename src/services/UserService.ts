@@ -66,6 +66,15 @@ export default class UserService {
         ]
     }
 
+    static async GetUserLinkedPosts(userId: number) {
+        const result = await api.get<IPost[]>(`/api/Post/GetUserLinkedPosts/${userId}`)
+        result.data.forEach(post=>{
+            post.publicationDate = GlobalService.JsonDateStringToDateObj(post.publicationDate)
+        })
+        return result
+    }
+
+
     static async GetUserPosts(userId: number) {
         const result = await api.get<IPost[]>(`/api/Post/user/GetUserPosts/${userId}`)
         result.data.forEach(post=>{
@@ -73,9 +82,16 @@ export default class UserService {
         })
         return result
     }
+
+
+
     static async GetUserGroups(userId: number){
         return await api.get<IGroup[]>(`${consts.API_URL}/api/Group/getUserGroups/${userId}`);
     }
+
+
+
+
     static GetFavorites(userId:number):IFavorite[]{
         return [
             {

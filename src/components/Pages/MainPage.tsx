@@ -28,42 +28,17 @@ const MainPage = observer(() => {
     const fetchData = async ()=>{
         if(userStore?.user.userId != null){
             setIsLogged(true)
-            const tempPosts = [] as IPost[]
+            try {
 
-            FriendsService.GetFriends(userStore.user.userId).then(response=>{
-                response.data.forEach(async(friend)=>{
-                    try {
-                        setIsLoading(true)
-                        const postResponse = await UserService.GetUserPosts(friend.userId)
-                        tempPosts.push(...postResponse.data)
-                    }catch (e) {
-                        setIsError(true)
-                        setIsLoading(false)
-                    }
-                })
-            })
-
-            UserService.GetUserGroups(userStore.user.userId).then(response=>{
-                response.data.forEach(async(group)=>{
-                    try {
-                        setIsLoading(true)
-                        const postResponse = await GroupService.GetPosts(group.groupId)
-                        tempPosts.push(...postResponse.data)
-                    }catch (e) {
-                        setIsError(true)
-                        setIsLoading(false)
-                    }
-                    setIsLoading(false)
-                })
-            })
-
-
-            tempPosts.sort((a,b)=>{
-                // @ts-ignore
-                return new Date(b.publicationDate.toDateString())-new Date(a.publicationDate.toDateString())
-            })
-            setPosts([...tempPosts])
-            setIsLoading(false)
+                const postsResponse = await UserService.GetUserLinkedPosts(userStore?.user.userId)
+                setPosts(postsResponse.data)
+            }
+            catch (e) {
+                setIsError(true)
+            }
+            finally {
+                setIsLoading(false)
+            }
         }
         setIsLoading(false)
     }
