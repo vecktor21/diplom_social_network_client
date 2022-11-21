@@ -50,7 +50,7 @@ const PostComponent : FC<Props> = observer((props) => {
     //todo
     const commentAction = ()=>{
         console.log(commentCount)
-        navigate(routes.POST_ROUTE + `?postId=${props.post.postId}`)
+        navigate(routes.POST_ROUTE + `?postId=${props.post.postId}&postType=${props.post.postType}`)
     }
     //todo
     const shareAction = ()=>{

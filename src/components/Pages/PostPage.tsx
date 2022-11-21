@@ -18,14 +18,20 @@ import {Context} from "../../index";
 import {IComment} from "../../types/IComment";
 import CommentComponent from "../CommentComponent";
 import ErrorComponent from "../UI/ErrorComponent";
+import {AxiosResponse} from "axios";
+import {IFile} from "../../types/IFile";
+import FileService from "../../services/FileService";
+import consts from "../../consts";
+import post from "../style/Post.module.css";
+import {IAttachment} from "../../types/IAttachment";
 
 const PostPage = observer(() => {
     const {userStore} = useContext(Context)
     const [params] = useSearchParams()
     const postId = Number(params.get("postId"))
+    const postType = params.get("postType")
     const [isError, setIsError] = useState(false)
-    //const [post, setPost] = useState({Author: {Img: ""}, Comments: [{}], PostAttachments: [{}], Likes: [{}]} as IPost)
-    const [post, setPost] = useState({} as IPost)
+    const [post, setPost] = useState({author: {img: ""}, publicationDate: new Date(), postAttachments: [] as IAttachment[]} as IPost)
     const [isLoading, setIsLoading] = useState(true)
     const [currentImage, setCurrentImage] = useState(0);
     const [isViewerOpen, setIsViewerOpen] = useState(false);
@@ -48,17 +54,41 @@ const PostPage = observer(() => {
             setIsError(true)
         }
 
-        const postResult = PostService.GetPost(postId)
-        setPost(postResult)
+        fetchPost()
 
-        setIsLoading(false)
-        console.log(postResult.comments)
-
+        console.log(post.comments)
+/*
         postResult.comments.forEach(comment=>{
             iterateComments(comment)
-        })
+        })*/
     }, [])
+    console.log(post.comments)
 
+    const fetchPost = async ()=>{
+        try{
+            try{
+                let postResult = {} as AxiosResponse<IPost>
+                if(postType=="user"){
+                    postResult = await PostService.GetUserPost(postId)
+                }
+                else if(postType=="group"){
+                    postResult = await PostService.GetGroupPost(postId)
+                }else{
+                    setIsError(true)
+                    setIsLoading(false)
+                }
+                await setPost(postResult.data)
+            }catch (e) {
+                setIsError(true)
+            }
+            finally {
+                setIsLoading(false)
+            }
+        }catch (e) {
+            setIsLoading(false)
+            setIsError(true)
+        }
+    }
 
     // @ts-ignore
     const iterateComments =  (comment: IComment) : number => {
@@ -103,22 +133,27 @@ const PostPage = observer(() => {
                         <div className={postStyle.post} style={{marginTop: "20px"}}>
                             <div className={postStyle.authorInfo}>
                                 <div className={image.medium}>
-                                    <img src={post.author.img} />
+                                    <img src={consts.API_URL + post.author.img} />
                                 </div>
                                 <div className={postStyle.date}>
                                     дата публикации:
-                                    {/*{post.publicationDate.getFullYear()}.
+                                    {post.publicationDate.getFullYear()}.
                                     {post.publicationDate.getMonth()+1}.
-                                    {post.publicationDate.getDate()}*/}
+                                    {post.publicationDate.getDate()}
                                 </div>
                                 <div>{post.author.name}</div>
                             </div>
                             <div className={postStyle.title}>{post.title}</div>
                             <div className={postStyle.text}>{post.text}</div>
                             <div className={postStyle.images}>
-                                {post.postAttachments.map((attachment, index) => (
+                                {
+                                    post.postAttachments.length == 0
+                                        ?
+                                        null
+                                        :
+                                    post.postAttachments.filter(att=>att.fileType=="image").map((attachment, index) => (
                                     <img
-                                        src={ attachment.fileLink }
+                                        src={ consts.API_URL+ attachment.fileLink }
                                         onClick={ () => openImageViewer(index) }
                                         width="300"
                                         key={ index }
@@ -127,11 +162,22 @@ const PostPage = observer(() => {
                                     />
                                 ))}
                                 {isViewerOpen &&
-                                <ImageViewer
-                                    src={post.postAttachments.map(attachment=>attachment.fileLink)}
+                                <ImageViewer src={post.postAttachments.map(attachment=>
+                                    attachment.fileLink)}
                                              closeOnClickOutside={ true }
                                              onClose={ closeImageViewer }
                                 />
+                                }
+                            </div>
+                            <div>
+                                {
+                                    post.postAttachments.length == 0
+                                    ?
+                                        null
+                                    :
+                                        post.postAttachments.filter(att=>att.fileType!="image").map((attachment, index) => (
+                                            <a key={attachment.attachmentId} href={consts.API_URL + attachment.fileLink}>{attachment.fileName}</a>
+                                        ))
                                 }
                             </div>
                             <div className={postStyle.bottomSection}>
@@ -159,9 +205,15 @@ const PostPage = observer(() => {
                             </div>
                             <div>
                                 {
-                                    post.comments.map(comment=>
-                                        PostService.IterateComments(comment)
-                                    )
+                                    post.comments.length == 0
+                                    ?
+                                        <div>
+                                            здесь еще нет комментариев
+                                        </div>
+                                    :
+                                        post.comments.map(comment=>
+                                            PostService.IterateComments(comment)
+                                        )
                                 }
                             </div>
                         </div>
