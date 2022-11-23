@@ -49,17 +49,26 @@ const UserPage = observer(() => {
     const [userPosts, setUserPosts] = useState([] as IPost[])
     const [friendRequestMessage, setFriendRequestMessage] = useState("Добрый день, я бы хотел добавить вас в друзья :)")
     const [isFriendRequestModalVisible, setIsFriendRequestModalVisible] = useState(false)
-    const [isPostFilesUploadModalVisible, setIsPostFilesUploadModalVisible] = useState(false)
-    const [isPostCreateModelVisible, setIsPostCreateModelVisible] = useState(false)
-    const [isFileUploadModalVisible, setIsFileUploadModalVisible] = useState(false)
     const navigate = useNavigate()
     //являюсь ли я другом с пользователем, на странице которого находимся
     const [isFriendWith, setIsFriendWith] = useState(false)
     //отправлял ли я запрос в друзья пользователю, на странице которого находимся
     const [isFriendRequestSent, setIsFriendRequestSent] = useState(false)
+
+
+    //загрузка файлов
+    //для открытия модального окна
+    const [isFileUploadModalVisible, setIsFileUploadModalVisible] = useState(false)
     //файлы для загрузки на страницу
     const [filesToUpload, setFilesToUpload] = useState([] as File[])
-    const [newPost, setNewPost] = useState({attachments: [] as number[]} as IPostCreateViewModel)
+
+
+    //создание постов
+    //модель поста
+    const [newPost, setNewPost] = useState({attachments: [] as number[], text: "", title: ""} as IPostCreateViewModel)
+    //открытие соответствующих модальных окон
+    const [isPostFilesUploadModalVisible, setIsPostFilesUploadModalVisible] = useState(false)
+    const [isPostCreateModelVisible, setIsPostCreateModelVisible] = useState(false)
 
     useEffect(()=>{
         fetchData()

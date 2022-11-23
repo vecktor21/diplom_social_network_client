@@ -20,6 +20,8 @@ import {GroupBelonging} from "../../types/GroupBelonging";
 import FileService from "../../services/FileService";
 import {IFile} from "../../types/IFile";
 import FileUploadComponent from "../UI/FileUploadComponent";
+import Modal from "../UI/Modal";
+import {IPostCreateViewModel} from "../../types/IPostCreateViewModel";
 const GroupPage = observer(() => {
     const [params] = useSearchParams()
     const id = Number(params.get("id"))
@@ -32,8 +34,18 @@ const GroupPage = observer(() => {
         isMember: false
     } as GroupBelonging)
     const [groupPosts, setGroupPosts] = useState([] as IPost[])
+
+    //загрузка файлов
     const [filesToUpload, setFilesToUpload] = useState([] as File[])
     const [isFileUploadModalVisible, setIsFileUploadModalVisible] = useState(false)
+
+
+    //создание постов
+    //модель поста
+    const [newPost, setNewPost] = useState({attachments: [] as number[], text: "", title: ""} as IPostCreateViewModel)
+    //открытие соответствующих модальных окон
+    const [isPostFilesUploadModalVisible, setIsPostFilesUploadModalVisible] = useState(false)
+    const [isPostCreateModelVisible, setIsPostCreateModelVisible] = useState(false)
 
     useEffect(()=>{
         fetchGroup()
@@ -70,6 +82,7 @@ const GroupPage = observer(() => {
         }
         setIsLoading(false)
     }
+
     const fetchFiles =async ()=>{
         try {
             const fileResult = await FileService.GetGroupFiles(id)
@@ -109,6 +122,7 @@ const GroupPage = observer(() => {
             })
     }
 
+    //обработчик подписки
     const subscribe = ()=>{
         setIsLoading(true)
         // @ts-ignore
@@ -123,6 +137,7 @@ const GroupPage = observer(() => {
                 setIsLoading(false)
             })
     }
+
     const sendRequest = ()=>{
         setIsLoading(true)
         // @ts-ignore
@@ -141,6 +156,7 @@ const GroupPage = observer(() => {
     const edit = ()=>{
         alert("вы редактировали")
     }
+
     const cancelRequest = ()=>{
         setIsLoading(true)
         // @ts-ignore
@@ -155,6 +171,7 @@ const GroupPage = observer(() => {
                 setIsLoading(false)
             })
     }
+
     const uploadFiles = async ()=>{
         setIsLoading(true)
         const formData = new FormData()
@@ -169,6 +186,37 @@ const GroupPage = observer(() => {
         }
         setIsLoading(false)
     }
+
+    //создание поста
+    const createPost = async()=>{
+        setIsLoading(true)
+        const formData = new FormData()
+        filesToUpload.forEach(file=>{
+            formData.append("files", file)
+        })
+        try{
+            const fileResult = await FileService.UploadFiles(formData, id)
+            // @ts-ignore
+            newPost.authorId = id
+            fileResult.data.forEach(data=>{
+                newPost.attachments.push(data.fileId)
+            })
+            console.log(newPost)
+            await PostService.CreateGroupPost(newPost)
+            alert("пост успешно создан")
+            setIsPostCreateModelVisible(false)
+        }
+        catch(e){
+            console.log(e)
+            alert("ошибка создания поста")
+        }
+        finally {
+
+            setIsLoading(false)
+        }
+    }
+
+
     return (
         <div className={global.pageContent}>
             {isLoading
@@ -181,12 +229,42 @@ const GroupPage = observer(() => {
                     <ErrorComponent/>
                     :
                     <div >
+
+                        {/*модальное окно создания поста*/}
+                        <Modal isVisible={isPostCreateModelVisible} setIsVisible={setIsPostCreateModelVisible}>
+                            <label htmlFor="postTitle">заголовок поста</label>
+                            <input
+                                type="text" id="postTitle"
+                                value={newPost.title}
+                                onChange={e=>{setNewPost({...newPost, title:e.target.value})}}
+                            />
+                            <label htmlFor="postTitle">текст поста</label>
+                            <textarea
+                                id="postTitle"
+                                value={newPost.text}
+                                onChange={e=>{setNewPost({...newPost, text:e.target.value})}}
+                            ></textarea>
+                            <button onClick={()=>setIsPostFilesUploadModalVisible(true)}>добавить файлы во вложение</button>
+                            <button onClick={()=>{createPost()}}>создать пост</button>
+                        </Modal>
+
+
+                        {/*модальное окно для загрузки файлов */}
                         <FileUploadComponent
                             isVisible={isFileUploadModalVisible}
                             setIsVisible={setIsFileUploadModalVisible}
                             files={filesToUpload}
                             setFiles={setFilesToUpload}
                             uploadHandler={uploadFiles}
+                        />
+
+                        {/*модальное окно для загрузки файлов в пост*/}
+                        <FileUploadComponent
+                            isVisible={isPostFilesUploadModalVisible}
+                            setIsVisible={setIsPostFilesUploadModalVisible}
+                            files={filesToUpload}
+                            setFiles={setFilesToUpload}
+                            uploadHandler={()=>{setIsPostFilesUploadModalVisible(false)}}
                         />
                         <div className={page.topSection}>
                             <div className={page.mainInfo}>
@@ -267,6 +345,7 @@ const GroupPage = observer(() => {
                             groupBelonging.isLeader &&
                             <div className={global.section}>
                                 <button onClick={()=>setIsFileUploadModalVisible(true)}>загрузить файлы</button>
+                                <button onClick={()=>setIsPostCreateModelVisible(true)}>создать пост</button>
                             </div>
                         }
                         {

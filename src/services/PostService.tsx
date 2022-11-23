@@ -31,6 +31,8 @@ export default class PostService{
     static async CreateUserPost(newPost: IPostCreateViewModel){
         await api.post("/api/Post/User/createUserPost", newPost)
     }
+    
+
     //посты групп
     static async GetGroupPost(groupId: number) {
         const result = await api.get<IPost>(`/api/Post/group/${groupId}`)
@@ -47,6 +49,8 @@ export default class PostService{
     static async CreateGroupPost(newPost: IPostCreateViewModel){
         await api.post("/api/Post/Group/CreateGroupPost", newPost)
     }
+
+
     //вспомогательные методы
     static IterateComments(comment: IComment) : ReactNode {
         if(comment.replies.length == 0){
