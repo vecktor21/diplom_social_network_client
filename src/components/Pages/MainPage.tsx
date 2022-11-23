@@ -30,7 +30,7 @@ const MainPage = observer(() => {
             setIsLogged(true)
             try {
 
-                const postsResponse = await UserService.GetUserLinkedPosts(userStore?.user.userId)
+                const postsResponse = await PostService.GetUserLinkedPosts(userStore?.user.userId)
                 setPosts(postsResponse.data)
             }
             catch (e) {

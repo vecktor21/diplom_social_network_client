@@ -66,22 +66,6 @@ export default class UserService {
         ]
     }
 
-    static async GetUserLinkedPosts(userId: number) {
-        const result = await api.get<IPost[]>(`/api/Post/GetUserLinkedPosts/${userId}`)
-        result.data.forEach(post=>{
-            post.publicationDate = GlobalService.JsonDateStringToDateObj(post.publicationDate)
-        })
-        return result
-    }
-
-
-    static async GetUserPosts(userId: number) {
-        const result = await api.get<IPost[]>(`/api/Post/user/GetUserPosts/${userId}`)
-        result.data.forEach(post=>{
-            post.publicationDate = GlobalService.JsonDateStringToDateObj(post.publicationDate)
-        })
-        return result
-    }
 
 
 

@@ -15,9 +15,10 @@ export default class FileService {
             // @ts-ignore
             headers["Group"] = groupId
         }
-        await api.put<IFile[]>(consts.API_URL + `/api/file/AddFiles`, formData, {
+        const result = await api.put<IFile[]>(consts.API_URL + `/api/file/AddFiles`, formData, {
             headers: headers
         })
+        return result
     }
     static async DeleteFile(fileId: number, groupId? : number){
         return await api.delete<IFile[]>(consts.API_URL + `/api/File/${fileId}${groupId ? "/"+groupId : ""}`)

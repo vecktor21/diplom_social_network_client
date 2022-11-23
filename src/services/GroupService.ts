@@ -12,13 +12,6 @@ export default class GroupService {
         const response = await api.get<IGroup>(`${consts.API_URL}/api/group/${groupId}`)
         return response
     }
-    static async GetPosts(groupId: number){
-        const result = await api.get<IPost[]>(`/api/Post/group/GetGroupPosts/${groupId}`)
-        result.data.forEach(post=>{
-            post.publicationDate = GlobalService.JsonDateStringToDateObj(post.publicationDate)
-        })
-        return result
-    }
 
     static async FindGroups(search: string){
         return await api.get<IGroup[]>(`${consts.API_URL}/api/group/FindGroups?search=${search}`);

@@ -107,7 +107,7 @@ const PostComponent : FC<Props> = observer((props) => {
                 ))}
                 {isViewerOpen &&
                     <ImageViewer src={props.post.postAttachments.map(attachment=>
-                         attachment.fileLink)}
+                         consts.API_URL + attachment.fileLink)}
                          closeOnClickOutside={ true }
                          onClose={ closeImageViewer }
                     />

@@ -30,11 +30,22 @@ const ImagesPage = observer(() => {
         isLeader: false,
     } as GroupBelonging)
     const {userStore} = useContext(Context)
+    const [isShowDeleteSection, setIsShowDeleteSection] = useState(false)
 
     useEffect(()=>{
         fetchImages()
         checkBelonging()
+        isShowDelete()
     }, [])
+
+    const isShowDelete = ()=>{
+        if(userId == userStore?.user.userId){
+            setIsShowDeleteSection(true)
+        }
+        else if(groupBelonging.isLeader){
+            setIsShowDeleteSection(true)
+        }
+    }
 
     const checkBelonging = async()=>{
         if(userStore?.user.userId != undefined){
@@ -145,12 +156,16 @@ const ImagesPage = observer(() => {
                                                         onClick={()=>{openFileClickHandler(img)}}
                                                         title={img.logicalName}
                                                     >{img.logicalName.length > 20 ? img.logicalName.slice(0,20)+"...":img.logicalName}</span>
-                                                    {groupBelonging.isLeader &&
+
+
+
+                                                    {isShowDeleteSection &&
                                                     <Delete
                                                         className={global.delete}
                                                         onClick={()=>{deleteFileClickHandler(img)}}
                                                     />
                                                     }
+
 
                                                 </div>
                                             </div>

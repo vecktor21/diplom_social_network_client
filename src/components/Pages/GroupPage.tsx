@@ -85,7 +85,7 @@ const GroupPage = observer(() => {
     const fetchPosts = async()=>{
         try {
             setIsLoading(true)
-            const postResult = await GroupService.GetPosts(id)
+            const postResult = await PostService.GetGroupPosts(id)
             await setGroupPosts(postResult.data)
         }catch (e) {
             setIsError(true)

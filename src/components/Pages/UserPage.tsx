@@ -29,6 +29,8 @@ import FileService from "../../services/FileService";
 import FileUploadComponent from "../UI/FileUploadComponent";
 import {IAttachment} from "../../types/IAttachment";
 import {IComment} from "../../types/IComment";
+import PostService from "../../services/PostService";
+import {IPostCreateViewModel} from "../../types/IPostCreateViewModel";
 
 const UserPage = observer(() => {
     //пользователь, на странице которого находимся
@@ -47,6 +49,8 @@ const UserPage = observer(() => {
     const [userPosts, setUserPosts] = useState([] as IPost[])
     const [friendRequestMessage, setFriendRequestMessage] = useState("Добрый день, я бы хотел добавить вас в друзья :)")
     const [isFriendRequestModalVisible, setIsFriendRequestModalVisible] = useState(false)
+    const [isPostFilesUploadModalVisible, setIsPostFilesUploadModalVisible] = useState(false)
+    const [isPostCreateModelVisible, setIsPostCreateModelVisible] = useState(false)
     const [isFileUploadModalVisible, setIsFileUploadModalVisible] = useState(false)
     const navigate = useNavigate()
     //являюсь ли я другом с пользователем, на странице которого находимся
@@ -55,6 +59,7 @@ const UserPage = observer(() => {
     const [isFriendRequestSent, setIsFriendRequestSent] = useState(false)
     //файлы для загрузки на страницу
     const [filesToUpload, setFilesToUpload] = useState([] as File[])
+    const [newPost, setNewPost] = useState({attachments: [] as number[]} as IPostCreateViewModel)
 
     useEffect(()=>{
         fetchData()
@@ -168,7 +173,7 @@ const UserPage = observer(() => {
     const fetchPosts = async()=>{
         try {
             setIsLoading(true)
-            const postResult = await UserService.GetUserPosts(id)
+            const postResult = await PostService.GetUserPosts(id)
             await setUserPosts(postResult.data)
         }catch (e) {
             setIsError(true)
@@ -203,6 +208,8 @@ const UserPage = observer(() => {
             })
         })
     }
+
+
     const removeFromFriends = ()=>{
         setIsLoading(true)
         if(userStore?.user.userId != undefined){
@@ -218,6 +225,8 @@ const UserPage = observer(() => {
             })
         }
     }
+
+
     const cancelFriendRequest = ()=>{
         setIsLoading(true)
         if(userStore?.user.userId != undefined){
@@ -233,6 +242,8 @@ const UserPage = observer(() => {
                 })
         }
     }
+
+
     const addToFriends = ()=>{
         setIsLoading(true)
         FriendsService.CreateFriendRequest({message: friendRequestMessage, senderId: userStore?.user.userId, userId: user.userId} as IFriendRequest)
@@ -248,6 +259,7 @@ const UserPage = observer(() => {
             })
     }
 
+
     const uploadFiles = async ()=>{
         setIsLoading(true)
         const formData = new FormData()
@@ -256,11 +268,44 @@ const UserPage = observer(() => {
         })
         try{
             await FileService.UploadFiles(formData)
+            alert("файлы успешно добавлены")
+            setIsPostCreateModelVisible(false)
         }
         catch(e){
             console.log(e)
+            alert("ошибка загрузки файлов")
         }
-        setIsLoading(false)
+        finally {
+            setIsLoading(false)
+        }
+    }
+
+    const createPost = async()=>{
+        setIsLoading(true)
+        const formData = new FormData()
+        filesToUpload.forEach(file=>{
+            formData.append("files", file)
+        })
+        try{
+            const fileResult = await FileService.UploadFiles(formData)
+            // @ts-ignore
+            newPost.authorId = userStore?.user.userId
+            fileResult.data.forEach(data=>{
+                newPost.attachments.push(data.fileId)
+            })
+            console.log(newPost)
+            await PostService.CreateUserPost(newPost)
+            alert("пост успешно создан")
+            setIsPostCreateModelVisible(false)
+        }
+        catch(e){
+            console.log(e)
+            alert("ошибка создания поста")
+        }
+        finally {
+
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -278,6 +323,8 @@ const UserPage = observer(() => {
                             ? <ErrorComponent/>
                             :
                             <div className={global.pageContent}>
+
+                                {/*модальное окно загрузки файлов*/}
                                 <Modal isVisible={isFriendRequestModalVisible} setIsVisible={setIsFriendRequestModalVisible}>
                                     <label htmlFor="friendRequestMessage">ваше сообщение</label>
                                     <input
@@ -287,6 +334,28 @@ const UserPage = observer(() => {
                                     />
                                     <button onClick={()=>{addToFriends()}}>отправить запрос</button>
                                 </Modal>
+
+
+                                {/*модальное окно создания поста*/}
+                                <Modal isVisible={isPostCreateModelVisible} setIsVisible={setIsPostCreateModelVisible}>
+                                    <label htmlFor="postTitle">заголовок поста</label>
+                                    <input
+                                        type="text" id="postTitle"
+                                        value={newPost.title}
+                                        onChange={e=>{setNewPost({...newPost, title:e.target.value})}}
+                                    />
+                                    <label htmlFor="postTitle">текст поста</label>
+                                    <textarea
+                                        id="postTitle"
+                                        value={newPost.text}
+                                        onChange={e=>{setNewPost({...newPost, text:e.target.value})}}
+                                    ></textarea>
+                                    <button onClick={()=>setIsPostFilesUploadModalVisible(true)}>добавить файлы во вложение</button>
+                                    <button onClick={()=>{createPost()}}>создать пост</button>
+                                </Modal>
+
+
+                                {/*модальное окно для загрузки файлов */}
                                 <FileUploadComponent
                                     isVisible={isFileUploadModalVisible}
                                     setIsVisible={setIsFileUploadModalVisible}
@@ -294,6 +363,17 @@ const UserPage = observer(() => {
                                     setFiles={setFilesToUpload}
                                     uploadHandler={uploadFiles}
                                 />
+
+                                {/*модальное окно для загрузки файлов в пост*/}
+                                <FileUploadComponent
+                                    isVisible={isPostFilesUploadModalVisible}
+                                    setIsVisible={setIsPostFilesUploadModalVisible}
+                                    files={filesToUpload}
+                                    setFiles={setFilesToUpload}
+                                    uploadHandler={()=>{setIsPostFilesUploadModalVisible(false)}}
+                                />
+
+
                                 <div className={page.topSection}>
                                     <div className={page.mainInfo}>
                                         <div className={page.infoSection}>
@@ -360,6 +440,7 @@ const UserPage = observer(() => {
                                 {user.userId == userStore?.user.userId &&
                                     <div className={global.section}>
                                         <button onClick={()=>setIsFileUploadModalVisible(true)}>загрузить файлы</button>
+                                        <button onClick={()=>setIsPostCreateModelVisible(true)}>создать пост</button>
                                     </div>
                                 }
                                 {
