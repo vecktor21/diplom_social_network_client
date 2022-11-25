@@ -46,6 +46,7 @@ body{
 
 .delete{
     fill: red;
+    cursor: pointer;
 }
 .like{
     height: 40px;

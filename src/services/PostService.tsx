@@ -31,7 +31,10 @@ export default class PostService{
     static async CreateUserPost(newPost: IPostCreateViewModel){
         await api.post("/api/Post/User/createUserPost", newPost)
     }
-    
+    static async DeleteUserPost(postId: number){
+         return await api.delete(`/api/Post/user/DeleteUserPost?postId=${postId}`)
+    }
+
 
     //посты групп
     static async GetGroupPost(groupId: number) {
@@ -48,6 +51,9 @@ export default class PostService{
     }
     static async CreateGroupPost(newPost: IPostCreateViewModel){
         await api.post("/api/Post/Group/CreateGroupPost", newPost)
+    }
+    static async DeleteGroupPost(postId: number){
+        return await api.delete(`/api/Post/group/DeleteGroupPost?postId=${postId}`)
     }
 
 

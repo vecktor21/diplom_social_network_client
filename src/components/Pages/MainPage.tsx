@@ -72,7 +72,7 @@ const MainPage = observer(() => {
                                     </div>
                                     :
                                         posts.map(post=>
-                                            <PostComponent key={Math.random()}  post={post} /*key={post.PostId}*//>
+                                            <PostComponent key={Math.random()}  post={post} isShowDelete={false} deletePost={()=>{}}/>
                                         )
                             }
                         </div>

@@ -15,9 +15,12 @@ import {useNavigate} from "react-router-dom";
 import routes from '../consts'
 import {IComment} from "../types/IComment";
 import consts from '../consts'
+import {ReactComponent as Delete} from "./assets/delete-icon.svg";
 
 interface Props {
     post: IPost
+    isShowDelete: boolean
+    deletePost: ()=>void
 }
 
 
@@ -91,6 +94,14 @@ const PostComponent : FC<Props> = observer((props) => {
                     {props.post.publicationDate.getDate()}
                 </div>
                 <div>{props.post.author.name}</div>
+                {props.isShowDelete &&
+                <div>
+                    <Delete
+                        className={global.delete}
+                        onClick={()=>{props.deletePost()}}
+                    />
+                </div>
+                }
             </div>
             <div className={post.title}>{props.post.title}</div>
             <div className={post.text}>{props.post.text}</div>

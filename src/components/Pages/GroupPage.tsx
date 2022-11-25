@@ -216,7 +216,20 @@ const GroupPage = observer(() => {
         }
     }
 
-
+    //удаление поста
+    const deletePost = async (postId: number)=>{
+        setIsLoading(true)
+        try{
+            const res = await PostService.DeleteGroupPost(postId)
+            console.log(res.data)
+            alert("пост успешно удален")
+        }catch (e) {
+            alert("ошибка удаления поста")
+        }
+        finally {
+            setIsLoading(false)
+        }
+    }
     return (
         <div className={global.pageContent}>
             {isLoading
@@ -354,7 +367,12 @@ const GroupPage = observer(() => {
                                 <div>здесь еще нет записей</div>
                                 :
                                 groupPosts.map(post=>
-                                    <PostComponent post={post} key={post.postId}/>
+                                    <PostComponent
+                                        post={post}
+                                        key={post.postId}
+                                        isShowDelete={ groupBelonging.isLeader || userStore?.user.role.toLocaleLowerCase() == "admin"}
+                                        deletePost={()=>{deletePost(post.postId)}}
+                                    />
                                 )
                         }
                     </div>

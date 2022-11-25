@@ -317,6 +317,20 @@ const UserPage = observer(() => {
         }
     }
 
+    const deletePost = async (postId: number)=>{
+        setIsLoading(true)
+        try{
+            const res = await PostService.DeleteUserPost(postId)
+            console.log(res.data)
+            alert("пост успешно удален")
+        }catch (e) {
+            alert("ошибка удаления поста")
+        }
+        finally {
+            setIsLoading(false)
+        }
+    }
+
     return (
         <div>
             {!userStore?.isAuth
@@ -459,7 +473,15 @@ const UserPage = observer(() => {
                                     :
 
                                         userPosts.map(post=>
-                                            <PostComponent  post={post} key={post.postId}/>
+                                            <PostComponent
+                                                post={post}
+                                                key={post.postId}
+                                                isShowDelete={
+                                                    (()=> post.author.authorId == userStore?.user.userId || userStore?.user.role.toLocaleLowerCase() == "admin"
+                                                    )()
+                                                }
+                                                deletePost={()=>{deletePost(post.postId)}}
+                                            />
                                         )
                                 }
                             </div>
