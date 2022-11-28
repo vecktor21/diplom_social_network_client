@@ -1,9 +1,13 @@
 .comment{
-    margin-bottom: 20px;
-    padding: 20px;
+    margin-top: 20px;
+    padding: 5px;
+    border: 1px solid gray
 }
 .comment *{
     color: black;
+}
+.deleted{
+    color: gray;
 }
 .userSection{
     display: flex;
@@ -17,7 +21,7 @@
     margin-left: 20px;
 }
 .textSection{
-    padding: 20px;
+    padding: 10px 0;
 }
 .link{
     text-decoration: underline;

@@ -6,6 +6,7 @@ import ProfileImage from "./UI/ProfileImage";
 import {Size} from "../types/Size";
 import {ReactComponent as Reply} from './assets/reply-icon.svg'
 import commentModule from './style/Comment.module.css'
+import consts from "../consts";
 interface Props {
     comment: IComment
 }
@@ -26,24 +27,30 @@ const CommentComponent : FC<Props> = (props) => {
                     console.log(props.comment.userId)}
                 }
             >
-                <ProfileImage src={props.comment.profileImage} size={Size.small}/>
+                <ProfileImage src={consts.API_URL + props.comment.profileImage} size={Size.small}/>
                 <div>
                     {props.comment.userName}
                 </div>
             </div>
             <div className={commentModule.textSection}>
-                <span
-                    onClick={()=>{
-                        navigate(route.USER_PAGE_ROUTE + `?id=${props.comment.userId}`);
-                        console.log(props.comment.userId)}
-                    }
-                    className={commentModule.link}
-                >
+                {props.comment.isDeleted
+                    ?
+                    <div className={commentModule.deleted}>комментарий удален</div>
+                    :
+                    <div>
+                        <span
+                            onClick={()=>{
+                                navigate(route.USER_PAGE_ROUTE + `?id=${props.comment.userId}`)}
+                            }
+                            className={commentModule.link}
+                        >
                     {props.comment.isReply &&
                     props.comment.objectName + ","
                     }
                 </span>
-                {" " + props.comment.message}
+                        {" " + props.comment.message}
+                    </div>
+                }
             </div>
             <div>
                 {props.comment.attachment != null &&

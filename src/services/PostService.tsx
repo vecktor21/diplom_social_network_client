@@ -58,18 +58,25 @@ export default class PostService{
 
 
     //вспомогательные методы
-    static IterateComments(comment: IComment) : ReactNode {
+    static IterateComments(comment: IComment) : ReactNode[] {
         if(comment.replies.length == 0){
-            return <CommentComponent key={comment.commentId} comment={comment}/>
+            return [<CommentComponent key={comment.commentId} comment={comment}/>]
         }
+        let commentNodes = [
+            <CommentComponent comment={comment}/>
+        ] as ReactNode[]
         for(let i = 0; i < comment.replies.length; i++){
-            return (
+            commentNodes.push(
                 <div key={comment.commentId}>
-                    <CommentComponent comment={comment}/>
-            {PostService.IterateComments(comment.replies[i])}
-            </div>
-        )
-        }
+                    {
+                        PostService.IterateComments(comment.replies[i])
+                            .map(node=>
+                                node
+                            )
+                    }
+                </div>
+            )
+        }return commentNodes
     }
 
 

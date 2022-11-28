@@ -12,5 +12,6 @@ export interface IComment {
     attachment: IAttachment,
     likes: ILike[],
     replies: IComment[],
-    isReply: boolean
+    isReply: boolean,
+    isDeleted: boolean
 }

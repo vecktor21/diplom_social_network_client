@@ -24,6 +24,7 @@ import FileService from "../../services/FileService";
 import consts from "../../consts";
 import post from "../style/Post.module.css";
 import {IAttachment} from "../../types/IAttachment";
+import LoadingComponent from "../UI/LoadingComponent";
 
 const PostPage = observer(() => {
     const {userStore} = useContext(Context)
@@ -121,7 +122,7 @@ const PostPage = observer(() => {
             {isLoading
                 ?
                 <div>
-                    LOADING
+                    <LoadingComponent/>
                 </div>
                 :
                 <div>
