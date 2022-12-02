@@ -41,7 +41,7 @@ const App =observer(() => {
             }
             setIsLoading(false)
         })
-        .catch((e:AxiosError)=>{
+        .catch((e)=>{
             userStore?.Logout()
             setIsLoading(false)
             //setIsError(true)

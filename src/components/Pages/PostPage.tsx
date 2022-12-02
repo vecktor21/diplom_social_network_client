@@ -25,6 +25,10 @@ import consts from "../../consts";
 import post from "../style/Post.module.css";
 import {IAttachment} from "../../types/IAttachment";
 import LoadingComponent from "../UI/LoadingComponent";
+import Modal from "../UI/Modal";
+import FileUploadComponent from "../UI/FileUploadComponent";
+import {ICommentCreateModel} from "../../types/ICommentCreateModel";
+import {CommentService} from "../../services/CommentService";
 
 const PostPage = observer(() => {
     const {userStore} = useContext(Context)
@@ -37,6 +41,15 @@ const PostPage = observer(() => {
     const [currentImage, setCurrentImage] = useState(0);
     const [isViewerOpen, setIsViewerOpen] = useState(false);
     const [commentCount, setCommentCount] = useState(0)
+    const [isCommentReplyModalVisible, setIsCommentReplyModalVisible] = useState(false)
+    const [isCommentFilesUploadModalVisible, setIsCommentFilesUploadModalVisible] = useState(false)
+    const [filesToUpload, setFilesToUpload] = useState([] as File[])
+    const [newComment, setNewComment] = useState({
+        postId: 0,
+        message: '',
+        userId: userStore?.user.userId,
+        attachmentsId: [] as number[]
+    } as ICommentCreateModel)
 
     let comments = 0
 
@@ -105,18 +118,72 @@ const PostPage = observer(() => {
     }
 
 
-    useEffect(()=>setCommentCount(comments), [comments])
+    useEffect(()=>{
+        setCommentCount(comments)
+    }, [comments])
 
 
     const likeAction = ()=>{
         alert("лайкнул")
     }
     const commentAction = ()=>{
-        window.location.reload()
+        //window.location.reload()
     }
     const shareAction = ()=>{
         alert("репостнул")
     }
+
+    //ответ на сообщение
+    const replyAction = async ()=>{
+        setIsLoading(true)
+        const formData = new FormData()
+        filesToUpload.forEach(file=>{
+            formData.append("files", file)
+        })
+        try{
+            const fileResult = await FileService.UploadFiles(formData)
+            // @ts-ignore
+            newComment.userId = userStore?.user.userId
+            newComment.postId = post.postId
+            fileResult.data.forEach(data=>{
+                newComment.attachmentsId.push(data.fileId)
+            })
+            console.log(newComment)
+            await CommentService.CreatePostComment(newComment)
+            alert("комментарий успешно добавлен")
+            setIsCommentReplyModalVisible(false)
+        }
+        catch(e){
+            console.log(e)
+            alert("ошибка создания поста")
+        }
+        finally {
+
+            setIsLoading(false)
+        }
+    }
+
+    //загрузка файлов
+    const uploadFiles = async ()=>{
+        setIsLoading(true)
+        const formData = new FormData()
+        filesToUpload.forEach(file=>{
+            formData.append("files", file)
+        })
+        try{
+            await FileService.UploadFiles(formData)
+            alert("файлы успешно добавлены")
+            setIsCommentFilesUploadModalVisible(false)
+        }
+        catch(e){
+            console.log(e)
+            alert("ошибка загрузки файлов")
+        }
+        finally {
+            setIsLoading(false)
+        }
+    }
+
     return (
         <div className={global.pageContent}>
             {isLoading
@@ -132,6 +199,27 @@ const PostPage = observer(() => {
                         <ErrorComponent/>
                         :
                         <div className={postStyle.post} style={{marginTop: "20px"}}>
+                            {/*модальное окно комментария*/}
+                            <Modal isVisible={isCommentReplyModalVisible} setIsVisible={setIsCommentReplyModalVisible}>
+                                <label htmlFor="commentMessage">текст комментария</label>
+                                <textarea
+                                    id="commentMessage"
+                                    value={newComment.message}
+                                    onChange={e=>{setNewComment({...newComment, message:e.target.value})}}
+                                ></textarea>
+                                <button onClick={()=>setIsCommentFilesUploadModalVisible(true)}>добавить файлы во вложение</button>
+                                <button onClick={()=>{replyAction()}}>добавить комментарий</button>
+                            </Modal>
+
+                            {/*модальное окно для загрузки файлов */}
+                            <FileUploadComponent
+                                isVisible={isCommentFilesUploadModalVisible}
+                                setIsVisible={setIsCommentFilesUploadModalVisible}
+                                files={filesToUpload}
+                                setFiles={setFilesToUpload}
+                                uploadHandler={()=>{setIsCommentFilesUploadModalVisible(false)}}
+                            />
+
                             <div className={postStyle.authorInfo}>
                                 <div className={image.medium}>
                                     <img src={consts.API_URL + post.author.img} />
@@ -203,6 +291,10 @@ const PostPage = observer(() => {
                                     className={global.button}
                                     onClick={()=>{shareAction()}}
                                 ><Share className={global.comment}/></div>
+                                <div
+                                    className={global.button}
+                                    onClick={()=>{setIsCommentReplyModalVisible(true)}}
+                                >ответить</div>
                             </div>
                             <div>
                                 {

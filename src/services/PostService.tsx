@@ -63,7 +63,7 @@ export default class PostService{
             return [<CommentComponent key={comment.commentId} comment={comment}/>]
         }
         let commentNodes = [
-            <CommentComponent comment={comment}/>
+            <CommentComponent comment={comment} key={comment.commentId}/>
         ] as ReactNode[]
         for(let i = 0; i < comment.replies.length; i++){
             commentNodes.push(

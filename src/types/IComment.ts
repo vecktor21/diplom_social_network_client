@@ -9,7 +9,7 @@ export interface IComment {
     message: string,
     objectId: number,
     objectName: string,
-    attachment: IAttachment,
+    commentAttachments: IAttachment[],
     likes: ILike[],
     replies: IComment[],
     isReply: boolean,

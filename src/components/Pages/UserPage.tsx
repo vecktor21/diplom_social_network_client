@@ -367,9 +367,9 @@ const UserPage = observer(() => {
                                         value={newPost.title}
                                         onChange={e=>{setNewPost({...newPost, title:e.target.value})}}
                                     />
-                                    <label htmlFor="postTitle">текст поста</label>
+                                    <label htmlFor="postText">текст поста</label>
                                     <textarea
-                                        id="postTitle"
+                                        id="postText"
                                         value={newPost.text}
                                         onChange={e=>{setNewPost({...newPost, text:e.target.value})}}
                                     ></textarea>
