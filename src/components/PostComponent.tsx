@@ -16,6 +16,8 @@ import routes from '../consts'
 import {IComment} from "../types/IComment";
 import consts from '../consts'
 import {ReactComponent as Delete} from "./assets/delete-icon.svg";
+import postStyle from "./style/Post.module.css";
+import LikeService from "../services/LikeService";
 
 interface Props {
     post: IPost
@@ -30,6 +32,7 @@ const PostComponent : FC<Props> = observer((props) => {
     const [currentImage, setCurrentImage] = useState(0);
     const [isViewerOpen, setIsViewerOpen] = useState(false);
     const [commentCount, setCommentCount] = useState(0)
+    const [isLiked, setIsLiked] = useState(false)
 
 
     let comments = 0
@@ -44,13 +47,25 @@ const PostComponent : FC<Props> = observer((props) => {
         setCurrentImage(0);
         setIsViewerOpen(false);
     };
-    //todo
-    const likeAction = ()=>{
-        alert("лайкнул")
 
-        console.log(props.post.author.img)
+
+    //обработка лайков
+    const likeHandler = async ()=>{
+        if(userStore?.isAuth){
+            await LikeService.LikePost(userStore?.user.userId, isLiked, props.post.postId)
+            if(isLiked){
+                alert("убрал лайк")
+            }else{
+
+                alert("лайкнул")
+            }
+            setIsLiked(!isLiked)
+        }else{
+            alert("вы не вошли")
+        }
     }
-    //todo
+
+
     const commentAction = ()=>{
         console.log(commentCount)
         navigate(routes.POST_ROUTE + `?postId=${props.post.postId}&postType=${props.post.postType}`)
@@ -77,13 +92,14 @@ const PostComponent : FC<Props> = observer((props) => {
         props.post.comments.forEach(comment=>{
             iterateComments(comment)
         })
+        //проверка - лайкнул ли текущий пользователь пост
+        setIsLiked(LikeService.IsLiked(userStore?.user.userId, props.post.likes))
 
     }, [])
     useEffect(()=>setCommentCount(comments), [comments])
 
     return (
-        <div className={post.post}>
-            <div className={post.authorInfo}>
+        <div className={post.post}><div className={postStyle.authorInfo} onClick={()=>{navigate( props.post.postType =="user"? consts.USER_PAGE_ROUTE  + "?id=" + props.post.author.authorId : consts.GROUP_ROUTE + "?id=" + props.post.author.authorId)}}>
                 <div className={image.medium}>
                     <img src={consts.API_URL + props.post.author.img} />
                 </div>
@@ -132,17 +148,17 @@ const PostComponent : FC<Props> = observer((props) => {
             <div className={post.bottomSection}>
                 <div
                     className={global.button}
-                    onClick={()=>{likeAction()}}
+                    onClick={()=>{likeHandler()}}
                 >
-                    {props.post.likes.length} <Like className={
-                    `${global.like} ${
-                        props.post.likes.filter(like =>
-                            like.likedUserId === userStore?.user.userId 
-                        ).length > 0 &&
+                    {props.post.likes.length}
+                    <Like className={
+                        `${global.like} ${
+                            isLiked &&
                             global.liked
-                    }`
-                }
-                /></div>
+                        }`
+                    }
+                    />
+                </div>
                 <div
                     className={global.button}
                     onClick={()=>{commentAction()}}

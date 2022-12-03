@@ -12,6 +12,8 @@ import {ICommentCreateModel} from "../types/ICommentCreateModel";
 import {CommentService} from "../services/CommentService";
 import {ReactComponent as Delete} from "./assets/delete-icon.svg";
 import global from "./style/Global.module.css";
+import {ReactComponent as Like} from "./assets/heart-icon.svg";
+import LikeService from "../services/LikeService";
 interface Props {
     comment: IComment
 }
@@ -21,6 +23,7 @@ const CommentComponent : FC<Props> = (props) => {
     const {userStore} = useContext(Context)
     const [isShowReplyArea, setIsShowReplyArea] = useState(false)
     const [isShowDeleteSection, setIsShowDeleteSection] = useState(false)
+    const [isLiked, setIsLiked] = useState(false)
     const [replyComment, setReplyComment] = useState({
         postId: 0,
         message: '',
@@ -51,8 +54,27 @@ const CommentComponent : FC<Props> = (props) => {
         if(userStore?.user.role.toLocaleLowerCase() == "admin"){
             setIsShowDeleteSection(true)
         }
+        //проверка - лайкнул ли текущий пользователь пост
+        setIsLiked(LikeService.IsLiked(userStore?.user.userId, props.comment.likes))
 
     },[])
+
+    //обработка лайков
+    const likeHandler = async ()=>{
+        if(userStore?.isAuth){
+            await LikeService.LikeComment(userStore?.user.userId, isLiked, props.comment.commentId)
+            if(isLiked){
+                alert("убрал лайк")
+            }else{
+
+                alert("лайкнул")
+            }
+            setIsLiked(!isLiked)
+        }else{
+            alert("вы не вошли")
+        }
+    }
+
 
     return (
         <div className={commentModule.comment}>
@@ -88,6 +110,19 @@ const CommentComponent : FC<Props> = (props) => {
                         {" " + props.comment.message}
                     </div>
                 }
+            </div>
+            <div
+                className={global.button}
+                onClick={()=>{likeHandler()}}
+            >
+                {props.comment.likes.length}
+                <Like className={
+                    `${global.like} ${
+                        isLiked &&
+                        global.liked
+                    }`
+                }
+                />
             </div>
             <div>
                 {props.comment.commentAttachments.map(file=>

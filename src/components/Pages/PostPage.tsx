@@ -1,5 +1,5 @@
 import React, {ReactNode, useCallback, useContext, useEffect, useState} from 'react';
-import {useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {observable} from "mobx";
 import global from '../style/Global.module.css'
 import postStyle from '../style/Post.module.css'
@@ -29,6 +29,7 @@ import Modal from "../UI/Modal";
 import FileUploadComponent from "../UI/FileUploadComponent";
 import {ICommentCreateModel} from "../../types/ICommentCreateModel";
 import {CommentService} from "../../services/CommentService";
+import LikeService from "../../services/LikeService";
 
 const PostPage = observer(() => {
     const {userStore} = useContext(Context)
@@ -44,6 +45,8 @@ const PostPage = observer(() => {
     const [isCommentReplyModalVisible, setIsCommentReplyModalVisible] = useState(false)
     const [isCommentFilesUploadModalVisible, setIsCommentFilesUploadModalVisible] = useState(false)
     const [filesToUpload, setFilesToUpload] = useState([] as File[])
+    const [isLiked, setIsLiked] = useState(false)
+    const navigate = useNavigate()
     const [newComment, setNewComment] = useState({
         postId: 0,
         message: '',
@@ -91,6 +94,8 @@ const PostPage = observer(() => {
                     setIsError(true)
                     setIsLoading(false)
                 }
+                //проверка - лайкнул ли текущий пользователь пост
+                setIsLiked(LikeService.IsLiked(userStore?.user.userId, postResult.data.likes))
                 await setPost(postResult.data)
             }catch (e) {
                 setIsError(true)
@@ -122,10 +127,23 @@ const PostPage = observer(() => {
         setCommentCount(comments)
     }, [comments])
 
+    //обработка лайков
+    const likeHandler = async ()=>{
+        if(userStore?.isAuth){
+            await LikeService.LikePost(userStore?.user.userId, isLiked, post.postId)
+            if(isLiked){
+                alert("убрал лайк")
+            }else{
 
-    const likeAction = ()=>{
-        alert("лайкнул")
+                alert("лайкнул")
+            }
+            setIsLiked(!isLiked)
+        }else{
+            alert("вы не вошли")
+        }
     }
+
+
     const commentAction = ()=>{
         //window.location.reload()
     }
@@ -220,7 +238,7 @@ const PostPage = observer(() => {
                                 uploadHandler={()=>{setIsCommentFilesUploadModalVisible(false)}}
                             />
 
-                            <div className={postStyle.authorInfo}>
+                            <div className={postStyle.authorInfo} onClick={()=>{navigate( post.postType =="user"? consts.USER_PAGE_ROUTE  + "?id=" + post.author.authorId : consts.GROUP_ROUTE + "?id=" + post.author.authorId)}}>
                                 <div className={image.medium}>
                                     <img src={consts.API_URL + post.author.img} />
                                 </div>
@@ -272,17 +290,17 @@ const PostPage = observer(() => {
                             <div className={postStyle.bottomSection}>
                                 <div
                                     className={global.button}
-                                    onClick={()=>{likeAction()}}
+                                    onClick={()=>{likeHandler()}}
                                 >
-                                    {post.likes.length} <Like className={
-                                    `${global.like} ${
-                                        post.likes.filter(like =>
-                                            like.likedUserId === userStore?.user.userId
-                                        ).length > 0 &&
-                                        global.liked
-                                    }`
-                                }
-                                /></div>
+                                    {post.likes.length}
+                                    <Like className={
+                                        `${global.like} ${
+                                            isLiked &&
+                                            global.liked
+                                        }`
+                                    }
+                                    />
+                                </div>
                                 <div
                                     className={global.button}
                                     onClick={()=>{commentAction()}}
