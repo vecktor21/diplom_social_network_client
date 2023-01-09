@@ -22,6 +22,8 @@ import ArticlesPage from "./components/Pages/ArticlesPage";
 import ArticlePage from "./components/Pages/ArticlePage";
 import UserArticlesPage from "./components/Pages/UserArticlesPage";
 import PostPage from "./components/Pages/PostPage";
+import ArticleCreatePage from "./components/Pages/ArticleCreatePage";
+import ArticlePagePage from "./components/Pages/ArticlePagePage";
 
 export const AdminRoutes: IRoute[] = [
     {
@@ -131,6 +133,14 @@ export const PublicRoutes: IRoute[] = [
     {
         path: routes.ARTICLE_ROUTE,
         component: <ArticlePage/>
+    },
+    {
+        path: routes.ARTICLE_PAGE_ROUTE,
+        component: <ArticlePagePage/>
+    },
+    {
+        path: routes.ARTICLE_CREATE_ROUTE,
+        component: <ArticleCreatePage/>
     },
     {
         path: routes.ARTICLES_ROUTE,

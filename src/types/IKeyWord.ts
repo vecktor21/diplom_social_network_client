@@ -1,4 +1,5 @@
 export interface IKeyWord {
-    KeyWordId: number,
-    KeyWord: string
+    keyWordId: number,
+    keyWordRu: string
+    keyWordEn: string
 }

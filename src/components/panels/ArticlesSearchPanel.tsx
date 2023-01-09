@@ -12,13 +12,18 @@ const ArticlesSearchPanel = observer(() => {
     const [articles, setArticles] = useState([] as IArticle[])
     const [isLoading, setIsLoading] = useState(false)
 
-    const searchArticles = ()=>{
+    const searchArticles = async ()=>{
         setIsLoading(true)
-        const text = searchText.replace(".", "").replace(",", "")
-        const keywords = searchText.split(" ")
-        const searchResponse = ArticlesService.SearchArticles(text, keywords)
-        setArticles(searchResponse)
-        setIsLoading(false)
+        try{
+            const searchResponse = await ArticlesService.SearchArticles(searchText)
+            setArticles(searchResponse.data)
+        }catch(e){
+            console.log(e);
+            
+        }
+        finally{
+            setIsLoading(false)
+        }
     }
     return (
         <div>
@@ -49,7 +54,7 @@ const ArticlesSearchPanel = observer(() => {
                             :
                             <div>
                                 {articles.map(a=>
-                                    <ArticleObjectComponent article={a} key={a.ArticleId}></ArticleObjectComponent>
+                                    <ArticleObjectComponent article={a} key={a.articleId}></ArticleObjectComponent>
                                 )}
                             </div>
                     }

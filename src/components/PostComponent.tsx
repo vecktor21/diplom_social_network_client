@@ -74,6 +74,7 @@ const PostComponent : FC<Props> = observer((props) => {
     const shareAction = ()=>{
         alert("репостнул")
     }
+    //итерирование комментариев чтобы вывести их красиво
     // @ts-ignore
     const iterateComments =  (comment: IComment) : number => {
         if (comment.replies.length == 0) {

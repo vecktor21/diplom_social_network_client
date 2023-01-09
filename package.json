@@ -6,15 +6,22 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/draftjs-to-html": "^0.8.1",
+    "@types/html-to-draftjs": "^1.4.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.11.49",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "axios": "^0.27.2",
+    "draft-js": "^0.11.7",
+    "draftjs-to-html": "^0.9.1",
+    "html-react-parser": "^3.0.7",
+    "html-to-draftjs": "^1.5.0",
     "mobx": "^6.6.1",
     "mobx-react-lite": "^3.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-draft-wysiwyg": "^1.15.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-simple-image-viewer": "^1.2.2",
@@ -45,5 +52,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-draft-wysiwyg": "^1.13.4"
   }
 }

@@ -8,6 +8,7 @@ import global from "../style/Global.module.css";
 import style from '../style/Articles.module.css'
 import {ReactComponent as Logo} from "../assets/find-icon.svg";
 import LoadingComponent from "../UI/LoadingComponent";
+import KeyWordService from '../../services/KeyWordService';
 const ArticlesMyInterestsPanel = observer(() => {
     const {userStore} = useContext(Context)
     const [isLoading, setIsLoading] = useState(true)
@@ -15,35 +16,50 @@ const ArticlesMyInterestsPanel = observer(() => {
     const [searchText, setSearchText] = useState("")
     const [searchedKeyWords, setSearchedKeyWords] = useState([] as IKeyWord[])
     useEffect(()=>{
-        if(userStore?.user!= undefined || userStore?.user!= null){
-            const wordResponse = ArticlesService.GetMyKeyWords(userStore?.user.userId)
-            setKeyWords(wordResponse)
+        fetchKeyWords()
+    },[])
+
+    const fetchKeyWords = async ()=>{
+        try{
+            if(userStore?.user!= undefined || userStore?.user!= null){
+                const wordResponse =await KeyWordService.GetUserKeyWords(userStore?.user.userId)
+                setKeyWords(wordResponse.data)
+            }
+        }catch(e){
+            console.log(e);
+        }
+        finally{
             setIsLoading(false)
         }
-    },[])
-    const searchKeyWords = ()=>{
+
+    }
+
+    const searchKeyWords = async ()=>{
         if(searchText.length!=0){
-            setIsLoading(true)
-            let text = searchText.replace(".", "")
-            const keywords = text.replace(",", "").split(" ")
-            const searchResponse = ArticlesService.SearchKeyWords(keywords)
-            const words = searchResponse.sort()
-            setSearchedKeyWords(words)
-            setIsLoading(false)
+            try{
+                setIsLoading(true)
+                const searchResponse = await KeyWordService.SearchKeyWords(searchText)
+                const words = searchResponse.data.sort()
+                setSearchedKeyWords(words)
+            }catch(e){
+                console.log(e);
+            }finally{
+                setIsLoading(false)
+            }
         }else{
             setSearchedKeyWords([] as IKeyWord[])
         }
     }
     //todo
     const addKeyWord=(keyWord:IKeyWord)=>{
-        ArticlesService.AddKeyWord(keyWord.KeyWordId)
+        //KeyWordService.AddKeyWord(keyWord.keyWordId)
         setKeyWords([...keyWords,keyWord])
         alert("добавлен")
     }
     //todo
     const deleteKeyWord = (keyWord:IKeyWord)=>{
-        ArticlesService.DeleteKeyWord(keyWord.KeyWordId)
-        setKeyWords([...keyWords.filter(w=>{return w.KeyWordId != keyWord.KeyWordId})])
+        //KeyWordService.DeleteKeyWord(keyWord.keyWordId)
+        setKeyWords([...keyWords.filter(w=>{return w.keyWordId != keyWord.keyWordId})])
         alert("удален")
     }
     return (
@@ -71,8 +87,8 @@ const ArticlesMyInterestsPanel = observer(() => {
                             ?
                             <div className={global.searchResult}>
                                 {searchedKeyWords.map(s=>
-                                    <div key={s.KeyWordId} className={global.searchResultItem}>
-                                        {s.KeyWord}
+                                    <div key={s.keyWordId} className={global.searchResultItem}>
+                                        {s.keyWordRu}
                                         <button onClick={()=>{addKeyWord(s)}}>добавить</button>
                                     </div>
                                 )}
@@ -82,8 +98,8 @@ const ArticlesMyInterestsPanel = observer(() => {
                     </div>
                     <div className={global.flexBlock}>
                         {keyWords.map(w=>
-                            <div key={w.KeyWordId} className={style.keyWordObject} title={w.KeyWord}>
-                                <Cross className={global.cross} onClick={()=>{deleteKeyWord(w)}}/> {w.KeyWord}
+                            <div key={w.keyWordId} className={style.keyWordObject} title={w.keyWordRu}>
+                                <Cross className={global.cross} onClick={()=>{deleteKeyWord(w)}}/> {w.keyWordRu}
                             </div>
                         )}
                     </div>

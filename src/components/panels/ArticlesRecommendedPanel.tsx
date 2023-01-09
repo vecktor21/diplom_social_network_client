@@ -25,7 +25,7 @@ const ArticlesRecommendedPanel = () => {
                     <div className={style.sectionName}>Мои рекомендации</div>
                     {
                         articles.map(a=>
-                            <ArticleObjectComponent key={a.ArticleId} article={a}/>
+                            <ArticleObjectComponent key={a.articleId} article={a}/>
                         )
                     }
                 </div>

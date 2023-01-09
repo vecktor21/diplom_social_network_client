@@ -72,3 +72,12 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+
+.articleTextBlock{
+    border: 1px solid gray;
+}
+.articleTextBlock img{
+    width: 500px !important;
+
+}

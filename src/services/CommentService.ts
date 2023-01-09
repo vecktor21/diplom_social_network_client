@@ -1,16 +1,21 @@
-import {ICommentCreateModel} from "../types/ICommentCreateModel";
+import {IPostCommentCreateModel} from "../types/IPostCommentCreateModel";
 import api from "./AxiosService";
 import {ICommentUpdateModel} from "../types/ICommentUpdateModel";
+import {IArticleCommentCreateModel} from "../types/IArticleCommentCreateModel";
 
 export class CommentService {
 
     //комментарии к посту
     //создает комментарий для поста
-    static async CreatePostComment(newComment: ICommentCreateModel){
+    static async CreatePostComment(newComment: IPostCommentCreateModel){
         return await api.post("/api/Comment/CreatePostComment", newComment)
     }
 
-
+    //комментарии к статье
+    //создает комментарий для статьи
+    static async CreateArticleComment(newComment: IArticleCommentCreateModel){
+        return await api.post("/api/Comment/CreateArticleComment", newComment)
+    }
 
     //универсальные действия (выполняются в не зависимости, к какому комменту обращается)
     //удаляет любой коммент
@@ -20,7 +25,7 @@ export class CommentService {
 
     //создает ответ на комментарий
     //создает ответ для любого комментария (не только для коммента к посту)
-    static async ReplyToComment(commentId: number, newComment: ICommentCreateModel){
+    static async ReplyToComment(commentId: number, newComment: IPostCommentCreateModel){
         return await api.post(`/api/Comment/ReplyToComment/${commentId}`, newComment)
     }
     //изменить коммент

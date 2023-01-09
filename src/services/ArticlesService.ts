@@ -1,83 +1,53 @@
 import {IArticle} from "../types/IArticle";
 import {IKeyWord} from "../types/IKeyWord";
+import api from "./AxiosService";
+import {IArticleCreateModel} from "../types/IArticleCreateModel";
 
 export default class ArticlesService {
-    static GetArticle(id: number):IArticle{
-        var num = Math.floor(Math.random()*100)
-        return{
-            ArticleId: num,
-            Author:{
-                authorId: id,
-                name: "some author",
-                img: ""
-            },
-            Likes: [{
-                likeId: 312,
-                likedUserId: 1,
-                objectId: num
-            }],
-            Rating: 5,
-            Introduction: "some introduction to this article",
-            KeyWords: [
-                {
-                    KeyWordId: 312,
-                    KeyWord: "Информационные системы"
-                },
-                {
-                    KeyWordId: 2,
-                    KeyWord: "Веб Технологии"
-                }
-            ],
-            Title: "this is title for this article this is title for this articlethis is title for thiss articlethis is title for this articlethis is title for this articlethis is title for this article",
-        }
+    //получить статью по айди
+    static GetArticle(id: number){
+        const result = api.get<IArticle>("/api/Articles/"+id)
+        return result
     }
-    static GetArticlesByAuthor(authorId: number):IArticle[]{
-        var articles = [] as IArticle[]
-        for(let i = 0; i <4; i++){
-            articles.push(this.GetArticle(authorId))
-        }
-        return articles
+    //получить все статьи автора
+    static GetArticlesByAuthor(authorId: number){
+        const result = api.get<IArticle[]>("/api/Articles/GetArticlesByAuthor?authorId="+authorId)
+        return result
     }
+    //получить рекомендации
     static GetRecommendedArticlesByAuthor(userId: number):IArticle[]{
         var articles = [] as IArticle[]
-        for(let i = 0; i <4; i++){
-            articles.push(this.GetArticle(i))
-        }
+        // for(let i = 0; i <4; i++){
+        //     articles.push(this.GetArticle(i))
+        // }
         return articles
     }
-    static SearchArticles(searchText: string, keyWords: string[]):IArticle[]{
-        const articles = [] as IArticle[]
-        for (let i = 0; i < keyWords.length; i ++){
-            articles.push(this.GetArticle(i))
-        }
-        return articles
+    //поиск статей
+    static SearchArticles(query: string){
+        const result = api.get<IArticle[]>(`/api/Articles/SearchArticles?query=${query}`)
+        return result
     }
-    static GetMyKeyWords(userId: number) : IKeyWord[]{
-        const words = [] as IKeyWord[]
-        for(let i = 0; i < 20; i++){
-            words.push({
-                    KeyWordId: i,
-                    KeyWord: "key words key words key words key words key words key words key words  key words key words key words key words key words key words " + i
-            })
-        }
-        return words
+    
+    //создание статьи
+    static async CreateArticle(article: IArticleCreateModel){
+        const result = await api.post("/api/Articles/CreateArticle", article)
+        return result
     }
-    static SearchKeyWords(serchText: string[]):IKeyWord[]{
-        const words = [] as IKeyWord[]
-        for (let i = 0; i < serchText.length; i ++){
-            words.push({
-                KeyWordId: i,
-                KeyWord: "key words" + i
-            })
-        }
-        return words
-    }
-    //todo
-    static AddKeyWord(keyWordId:number){
 
+    //изменение статьи
+    static async UpdateArticle(authorId: number, title: string, introduction: string, keyWords: number){
+        const result = await api.post("/api/Articles/UpdateArticle", {
+            authorId,
+            title,
+            introduction,
+            keyWords
+        })
+        return result
     }
-    //todo
-    static DeleteKeyWord(keyWordId:number){
 
+    //удаление статьи
+    static DeleteArticle(articleId: number){
+        const result = api.delete(`/api/Articles/DeleteArticle/${articleId}`)
+        return result
     }
 }

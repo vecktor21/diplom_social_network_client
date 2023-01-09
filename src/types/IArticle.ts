@@ -1,13 +1,17 @@
 import {IKeyWord} from "./IKeyWord";
 import {IAuthorInfo} from "./IAuthorInfo";
 import {ILike} from "./ILike";
+import { IUser } from "./IUser";
+import { IComment } from "./IComment";
 
 export interface IArticle {
-    Author: IAuthorInfo
-    ArticleId: number,
-    Title: string,
-    Introduction: string,
-    Rating: number,
-    Likes: ILike[]
-    KeyWords: IKeyWord[]
+    articleId: number,
+    author: IUser,
+    title: string,
+    introduction: string,
+    rating: number,
+    articleKeyWords: IKeyWord[],
+    likes: ILike[],
+    comments: IComment[],
+    articlePages: number[]
 }

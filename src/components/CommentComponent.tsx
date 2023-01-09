@@ -8,7 +8,7 @@ import {ReactComponent as Reply} from './assets/reply-icon.svg'
 import commentModule from './style/Comment.module.css'
 import consts from "../consts";
 import {Context} from "../index";
-import {ICommentCreateModel} from "../types/ICommentCreateModel";
+import {IPostCommentCreateModel} from "../types/IPostCommentCreateModel";
 import {CommentService} from "../services/CommentService";
 import {ReactComponent as Delete} from "./assets/delete-icon.svg";
 import global from "./style/Global.module.css";
@@ -29,7 +29,7 @@ const CommentComponent : FC<Props> = (props) => {
         message: '',
         userId: userStore?.user.userId,
         attachmentsId: [] as number[]
-    } as ICommentCreateModel)
+    } as IPostCommentCreateModel)
 
 
     const showReplyArea = ()=>{

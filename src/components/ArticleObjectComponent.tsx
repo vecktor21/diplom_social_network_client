@@ -10,17 +10,19 @@ import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import UserService from "../services/UserService";
 import {ObjectTypes} from "../types/ObjectTypes";
+import ArticlesService from "../services/ArticlesService";
 
 interface Props {
     article: IArticle
 }
 const ArticleObjectComponent : FC<Props> = observer((props) => {
     const navigate = useNavigate()
+    
     const {userStore, userFavoritesStore} = useContext(Context)
     const [isFav, setIsFav] = useState(false)
     useEffect(()=>{
         if(userFavoritesStore?.Favorites != undefined){
-            setIsFav(userFavoritesStore?.Favorites.filter(f=>f.ObjectId==props.article.ArticleId).length>0)
+            setIsFav(userFavoritesStore?.Favorites.filter(f=>f.ObjectId==props.article.articleId).length>0)
         }
     }, [])
     //todo
@@ -42,43 +44,52 @@ const ArticleObjectComponent : FC<Props> = observer((props) => {
         }
     }
 
+    //удаление статьи:
+    const deleteHandler = async ()=>{
+        if(window.confirm("вы уверены что хоите удалить эту статью?")){
+            await ArticlesService.DeleteArticle(props.article.articleId)
+            alert("статья удалена")
+        }
+    }
     return (
         <div className={style.articleObject} onClick={(e)=>{
             e.stopPropagation()
-            navigate(routes.ARTICLE_ROUTE+"?articleId="+props.article.ArticleId)
+            //навигация на страницу статьи
+            navigate(`${routes.ARTICLE_NAVIGATION_ROUTE}/${props.article.articleId}`)
         }}>
             <div
-                 title={props.article.Title}
-                 className={style.articleObject_title}><b>Название: </b>{props.article.Title}</div>
+                 title={props.article.title}
+                 className={style.articleObject_title}><b>Название: </b>{props.article.title}</div>
             <div className={style.articleObject_author}><b>Автор: </b><span onClick={(e)=>{
                 e.stopPropagation()
-                navigate(routes.USER_PAGE_ROUTE+"?userId="+props.article.Author.authorId)
+                navigate(routes.USER_PAGE_ROUTE+"?id="+props.article.author.userId)
 
-            }}>{props.article.Author.name}</span></div>
-            <div className={style.articleObject_rating}><b>Рейтинг: </b>{props.article.Rating}</div>
+            }}>{props.article.author.name}</span></div>
+            <div className={style.articleObject_rating}><b>Рейтинг: </b>{props.article.rating}</div>
             <div>
                 <b>ключевые слова:</b>
                 <div className={global.flexBlock}>
-                    {props.article.KeyWords.map(w=>
-                        <div key={w.KeyWordId} className={style.keyWordObject} title={w.KeyWord}>
-                            {w.KeyWord}
+                    {props.article.articleKeyWords.map(w=>
+                        <div key={w.keyWordId} className={style.keyWordObject} title={w.keyWordRu}>
+                            {w.keyWordRu}
                         </div>
                     )}
                 </div>
             </div>
-            {userStore?.user.userId==props.article.Author.authorId
+            {userStore?.user.userId==props.article.author.userId
             ?
                 <div>
                     <button onClick={(e)=>{
                         e.stopPropagation()
-                        navigate(routes.ARTICLE_ROUTE+"?articleId="+props.article.ArticleId)
+                        navigate(routes.ARTICLE_ROUTE+"?articleId="+props.article.articleId)
                     }
                     }>изменить</button>
+                    <button onClick={deleteHandler}>удалить</button>
                 </div>
             :
                 <div>
                     <Like
-                        className={`${props.article.Likes.filter(l=>l.likedUserId==userStore?.user.userId).length>0
+                        className={`${props.article.likes.filter(l=>l.likedUserId==userStore?.user.userId).length>0
                             ?
                             global.like + " " + global.button + " " + global.liked
                             :
@@ -86,7 +97,7 @@ const ArticleObjectComponent : FC<Props> = observer((props) => {
                         }`}
                         onClick={(e)=>{
                             e.stopPropagation()
-                            like(props.article.ArticleId)
+                            like(props.article.articleId)
                         }}
                     />
                     <Favorite
@@ -98,7 +109,7 @@ const ArticleObjectComponent : FC<Props> = observer((props) => {
                         }`}
                         onClick={(e)=>{
                             e.stopPropagation()
-                            addToFavorite(props.article.ArticleId)
+                            addToFavorite(props.article.articleId)
                         }}
                     />
                 </div>

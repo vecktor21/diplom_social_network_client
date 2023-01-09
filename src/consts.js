@@ -15,7 +15,11 @@ export default  {
     GROUP_ROUTE: "/group",
     GROUP_BLACK_LIST_ROUTE: "/group/banned",
     USER_ARTICLES_ROUTE: "/articles",
-    ARTICLE_ROUTE: "/article/:articleId/:page",
+    ARTICLE_ROUTE: "/article/:articleId",
+    ARTICLE_PAGE_ROUTE: "/article/:articleId/:articlePageId",
+    ARTICLE_CREATE_ROUTE: "/article/create",
+    //используется при навигации на страницу статьи
+    ARTICLE_NAVIGATION_ROUTE: "/article",
     ARTICLES_ROUTE: "/articles",
     POST_ROUTE: "/post",
     API_URL: "https://localhost:7021"

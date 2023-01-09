@@ -27,7 +27,7 @@ import {IAttachment} from "../../types/IAttachment";
 import LoadingComponent from "../UI/LoadingComponent";
 import Modal from "../UI/Modal";
 import FileUploadComponent from "../UI/FileUploadComponent";
-import {ICommentCreateModel} from "../../types/ICommentCreateModel";
+import {IPostCommentCreateModel} from "../../types/IPostCommentCreateModel";
 import {CommentService} from "../../services/CommentService";
 import LikeService from "../../services/LikeService";
 
@@ -52,7 +52,7 @@ const PostPage = observer(() => {
         message: '',
         userId: userStore?.user.userId,
         attachmentsId: [] as number[]
-    } as ICommentCreateModel)
+    } as IPostCommentCreateModel)
 
     let comments = 0
 
