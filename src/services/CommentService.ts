@@ -2,6 +2,7 @@ import {IPostCommentCreateModel} from "../types/IPostCommentCreateModel";
 import api from "./AxiosService";
 import {ICommentUpdateModel} from "../types/ICommentUpdateModel";
 import {IArticleCommentCreateModel} from "../types/IArticleCommentCreateModel";
+import {IArticlePageCommentCreateModel} from "../types/IArticlePageCommentCreateModel";
 
 export class CommentService {
 
@@ -15,6 +16,11 @@ export class CommentService {
     //создает комментарий для статьи
     static async CreateArticleComment(newComment: IArticleCommentCreateModel){
         return await api.post("/api/Comment/CreateArticleComment", newComment)
+    }
+
+    //комментарии к странице статьи
+    static async CreateArticlePageComment(newComment: IArticlePageCommentCreateModel){
+        return await api.post("/api/Comment/CreateArticlePageComment", newComment)
     }
 
     //универсальные действия (выполняются в не зависимости, к какому комменту обращается)

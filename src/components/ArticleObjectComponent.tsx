@@ -81,7 +81,7 @@ const ArticleObjectComponent : FC<Props> = observer((props) => {
                 <div>
                     <button onClick={(e)=>{
                         e.stopPropagation()
-                        navigate(routes.ARTICLE_ROUTE+"?articleId="+props.article.articleId)
+                        navigate(routes.ARTICLE_NAVIGATION_ROUTE+"/update/"+props.article.articleId)
                     }
                     }>изменить</button>
                     <button onClick={deleteHandler}>удалить</button>

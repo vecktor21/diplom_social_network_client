@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react';
 import {Editor} from "react-draft-wysiwyg";
-import { EditorState, ContentState, convertToRaw } from 'draft-js';
+import {EditorState, ContentState, convertToRaw, convertFromRaw, convertFromHTML} from 'draft-js';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from "draftjs-to-html";
 
@@ -11,7 +11,8 @@ interface Props {
 
 const TextEditor : FC<Props>= (props) => {
     //draft js
-    const [editorState, setEditorState] = useState(EditorState.createEmpty())
+    // @ts-ignore
+    const [editorState, setEditorState] = useState(EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(props.text))))
     return (
 
         <div>

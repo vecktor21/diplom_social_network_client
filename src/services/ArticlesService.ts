@@ -2,6 +2,7 @@ import {IArticle} from "../types/IArticle";
 import {IKeyWord} from "../types/IKeyWord";
 import api from "./AxiosService";
 import {IArticleCreateModel} from "../types/IArticleCreateModel";
+import {IArticleUpdateModel} from "../types/IArticleUpdateModel";
 
 export default class ArticlesService {
     //получить статью по айди
@@ -9,6 +10,13 @@ export default class ArticlesService {
         const result = api.get<IArticle>("/api/Articles/"+id)
         return result
     }
+
+    //получить статью по айди для измения (в виде IArticleUpdateModel)
+    static GetArticleForUpdate(id: number){
+        const result = api.get<IArticleUpdateModel>("/api/Articles/GetArticleForupdate/"+id)
+        return result
+    }
+
     //получить все статьи автора
     static GetArticlesByAuthor(authorId: number){
         const result = api.get<IArticle[]>("/api/Articles/GetArticlesByAuthor?authorId="+authorId)
@@ -35,13 +43,8 @@ export default class ArticlesService {
     }
 
     //изменение статьи
-    static async UpdateArticle(authorId: number, title: string, introduction: string, keyWords: number){
-        const result = await api.post("/api/Articles/UpdateArticle", {
-            authorId,
-            title,
-            introduction,
-            keyWords
-        })
+    static async UpdateArticle(article: IArticleUpdateModel){
+        const result = await api.post("/api/Articles/UpdateArticle", article)
         return result
     }
 

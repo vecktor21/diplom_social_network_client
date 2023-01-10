@@ -67,7 +67,7 @@ export default class PostService{
         ] as ReactNode[]
         for(let i = 0; i < comment.replies.length; i++){
             commentNodes.push(
-                <div key={comment.commentId}>
+                <div key={comment.commentId * new Date().getMilliseconds()}>
                     {
                         PostService.IterateComments(comment.replies[i])
                             .map(node=>

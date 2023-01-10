@@ -21,6 +21,7 @@ import {IPostCommentCreateModel} from "../../types/IPostCommentCreateModel";
 import {IArticleCommentCreateModel} from "../../types/IArticleCommentCreateModel";
 import {log} from "util";
 import consts from "../../consts";
+import routes from "../../consts";
 
 const ArticlePage = () => {
     const [article, setArticle] = useState({} as IArticle)
@@ -173,7 +174,14 @@ const ArticlePage = () => {
                                     article.author.userId == userStore?.user.userId ?
                                         <div>
                                             <button onClick={()=>{
-                                            }}>изменить</button>
+
+                                                navigate(routes.ARTICLE_NAVIGATION_ROUTE+"/update/"+article.articleId)
+                                            }}>
+                                                изменить
+                                            </button>
+                                            <button onClick={()=>{
+                                                navigate(`${consts.ARTICLE_NAVIGATION_ROUTE}/create-page/${params.articleId}`)
+                                            }}>добавить страницу</button>
                                             <button onClick={deleteHandler}>удалить</button>
                                         </div>
                                         :

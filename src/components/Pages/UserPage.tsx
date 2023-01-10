@@ -457,6 +457,9 @@ const UserPage = observer(() => {
                                             <NavLink to={routes.GROUPS_ROUTE + "?id="+id}>
                                                 Подписки {` ${groups.length}`}
                                             </NavLink>
+                                            <NavLink to={routes.USER_ARTICLES_NAVIGATION_ROUTE + "/"+id}>
+                                                Статьи
+                                            </NavLink>
                                         </div>
                                     </div>
                                 </div>
