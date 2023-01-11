@@ -13,5 +13,6 @@ export interface IArticle {
     articleKeyWords: IKeyWord[],
     likes: ILike[],
     comments: IComment[],
-    articlePages: number[]
+    articlePages: number[],
+    publicationDate: Date,
 }

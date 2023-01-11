@@ -9,5 +9,6 @@ export interface IArticlePage {
     articleId: number,
     likes: ILike[],
     comments: IComment[],
-    articlePages: number[]
+    articlePages: number[],
+    publicationDate: Date,
 }

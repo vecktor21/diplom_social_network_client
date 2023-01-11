@@ -22,6 +22,7 @@ import {IArticleCommentCreateModel} from "../../types/IArticleCommentCreateModel
 import {log} from "util";
 import consts from "../../consts";
 import routes from "../../consts";
+import postStyle from "../style/Post.module.css";
 
 const ArticlePage = () => {
     const [article, setArticle] = useState({} as IArticle)
@@ -152,6 +153,12 @@ const ArticlePage = () => {
                             <div>
                                 <div>
                                     статья: {article.title}
+                                </div>
+                                <div className={global.date}>
+                                    дата публикации:
+                                    {article.publicationDate.getFullYear()}.
+                                    {article.publicationDate.getMonth()+1}.
+                                    {article.publicationDate.getDate()}
                                 </div>
                                 <div onClick={likeHandler}
                                      className={global.button}

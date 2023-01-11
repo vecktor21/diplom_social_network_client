@@ -242,7 +242,7 @@ const PostPage = observer(() => {
                                 <div className={image.medium}>
                                     <img src={consts.API_URL + post.author.img} />
                                 </div>
-                                <div className={postStyle.date}>
+                                <div className={global.date}>
                                     дата публикации:
                                     {post.publicationDate.getFullYear()}.
                                     {post.publicationDate.getMonth()+1}.

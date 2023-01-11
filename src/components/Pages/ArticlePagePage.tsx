@@ -159,6 +159,12 @@ const ArticlePagePage = () => {
                                         {articlePage.articleTitle}
                                     </span>
                                 </div>
+                                <div className={global.date}>
+                                    дата публикации:
+                                    {articlePage.publicationDate.getFullYear()}.
+                                    {articlePage.publicationDate.getMonth()+1}.
+                                    {articlePage.publicationDate.getDate()}
+                                </div>
                                 <div onClick={likeHandler}
                                      className={global.button}
                                 >

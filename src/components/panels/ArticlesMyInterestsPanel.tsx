@@ -50,15 +50,15 @@ const ArticlesMyInterestsPanel = observer(() => {
             setSearchedKeyWords([] as IKeyWord[])
         }
     }
-    //todo
-    const addKeyWord=(keyWord:IKeyWord)=>{
-        //KeyWordService.AddKeyWord(keyWord.keyWordId)
+    const addKeyWord = async (keyWord:IKeyWord)=>{
+        // @ts-ignore
+        await KeyWordService.AddKeyWordToUserInterests(keyWord.keyWordId, userStore?.user.userId)
         setKeyWords([...keyWords,keyWord])
         alert("добавлен")
     }
-    //todo
-    const deleteKeyWord = (keyWord:IKeyWord)=>{
-        //KeyWordService.DeleteKeyWord(keyWord.keyWordId)
+    const deleteKeyWord = async (keyWord:IKeyWord)=>{
+        // @ts-ignore
+        await KeyWordService.DeleteKeyWordFromUserInterests(keyWord.keyWordId, userStore?.user.userId)
         setKeyWords([...keyWords.filter(w=>{return w.keyWordId != keyWord.keyWordId})])
         alert("удален")
     }
@@ -70,7 +70,7 @@ const ArticlesMyInterestsPanel = observer(() => {
                 <LoadingComponent/>
             :
                 <div>
-                    <div className={style.sectionName}>Мои интересы</div>
+                    <div className={global.pageArticle}>Мои интересы</div>
                     <div className={style.searchBlock + " " + global.searchBlock}>
                         <Logo id="find" className={global.find} onClick={searchKeyWords}/>
                         <input

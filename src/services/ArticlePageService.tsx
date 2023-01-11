@@ -2,12 +2,14 @@ import api from "./AxiosService";
 import {IArticlePage} from "../types/IArticlePage";
 import {IArticlePageCreateModel} from "../types/IArticlePageCreateModel";
 import {IArticlePageUpdateModel} from "../types/IArticlePageUpdateModel";
+import {GlobalService} from "./GlobalService";
 
 export class ArticlePageService {
     //получить страницу
     static async GetArticlePage(articlePageId: number){
-        const res = await api.get<IArticlePage>("/api/ArticlePage/"+articlePageId)
-        return res
+        const result = await api.get<IArticlePage>("/api/ArticlePage/"+articlePageId)
+        result.data.publicationDate =GlobalService.JsonDateStringToDateObj(result.data.publicationDate)
+        return result
     }
     //получить страницу для редактирования
     static async GetArticlePageForUpdate(articlePageId: number){

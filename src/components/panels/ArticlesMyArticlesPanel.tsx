@@ -8,6 +8,7 @@ import style from "../style/Articles.module.css";
 import LoadingComponent from "../UI/LoadingComponent";
 import routes from "../../consts";
 import {useNavigate} from "react-router-dom";
+import global from "../style/Global.module.css";
 
 const ArticlesMyArticlesPanel = observer(() => {
     const [articles, setArticles] = useState([] as IArticle[])
@@ -39,7 +40,7 @@ const ArticlesMyArticlesPanel = observer(() => {
             ?
                 <LoadingComponent/>
             :<div>
-                    <div className={style.sectionName}>Мои статьи</div>
+                    <div className={global.pageArticle}>Мои статьи</div>
                     <button onClick={(e)=>{
                         e.stopPropagation()
                         navigate(routes.ARTICLE_CREATE_ROUTE)

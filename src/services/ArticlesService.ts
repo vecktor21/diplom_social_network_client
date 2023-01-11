@@ -3,36 +3,44 @@ import {IKeyWord} from "../types/IKeyWord";
 import api from "./AxiosService";
 import {IArticleCreateModel} from "../types/IArticleCreateModel";
 import {IArticleUpdateModel} from "../types/IArticleUpdateModel";
+import {GlobalService} from "./GlobalService";
 
 export default class ArticlesService {
     //получить статью по айди
-    static GetArticle(id: number){
-        const result = api.get<IArticle>("/api/Articles/"+id)
+    static async GetArticle(id: number){
+        const result = await api.get<IArticle>("/api/Articles/"+id)
+        result.data.publicationDate = GlobalService.JsonDateStringToDateObj(result.data.publicationDate)
         return result
     }
 
     //получить статью по айди для измения (в виде IArticleUpdateModel)
-    static GetArticleForUpdate(id: number){
+    static  GetArticleForUpdate(id: number){
         const result = api.get<IArticleUpdateModel>("/api/Articles/GetArticleForupdate/"+id)
         return result
     }
 
     //получить все статьи автора
-    static GetArticlesByAuthor(authorId: number){
-        const result = api.get<IArticle[]>("/api/Articles/GetArticlesByAuthor?authorId="+authorId)
+    static async GetArticlesByAuthor(authorId: number){
+        const result =await api.get<IArticle[]>("/api/Articles/GetArticlesByAuthor?authorId="+authorId)
+        result.data.forEach(article=>{
+            article.publicationDate =GlobalService.JsonDateStringToDateObj(article.publicationDate)
+        })
         return result
     }
     //получить рекомендации
-    static GetRecommendedArticlesByAuthor(userId: number):IArticle[]{
-        var articles = [] as IArticle[]
-        // for(let i = 0; i <4; i++){
-        //     articles.push(this.GetArticle(i))
-        // }
-        return articles
+    static async GetRecomendedArticles(userId: number){
+        const result =await api.get<IArticle[]>("/api/Articles/GetRecomendedArticles?userId="+userId)
+        result.data.forEach(article=>{
+            article.publicationDate =GlobalService.JsonDateStringToDateObj(article.publicationDate)
+        })
+        return result
     }
     //поиск статей
-    static SearchArticles(query: string){
-        const result = api.get<IArticle[]>(`/api/Articles/SearchArticles?query=${query}`)
+    static async SearchArticles(query: string){
+        const result = await api.get<IArticle[]>(`/api/Articles/SearchArticles?query=${query}`)
+        result.data.forEach(article=>{
+            article.publicationDate =GlobalService.JsonDateStringToDateObj(article.publicationDate)
+        })
         return result
     }
     
