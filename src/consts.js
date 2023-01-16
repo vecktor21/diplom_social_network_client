@@ -7,7 +7,7 @@ export default  {
     DOCUMENTS_PAGE_ROUTE: "/documents",
     VIDEOS_PAGE_ROUTE: "/videos",
     MESSAGES_ROUTE: "/messages",
-    CHAT_ROOM_ROUTE: "/chatroom",
+    CHAT_ROOM_ROUTE: "/messages/:chatRoomId",
     FRIENDS_ROUTE: "/user/friends",
     USER_OPTIONS_ROUTE: "/user/options",
     USER_BLACK_LIST_ROUTE: "/user/banned",

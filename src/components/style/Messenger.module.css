@@ -1,0 +1,83 @@
+.chatRoomComponent{
+    height: 80px;
+    border-bottom: 2px solid lightblue;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    cursor: pointer;
+}
+.chatRoomComponent:hover{
+    background-color: #dcedee;
+}
+.chatRoomComponent .messageSenderImage, .chatRoomComponent .chatRoomOptions{
+    width: 10%;
+    display: flex;
+    align-items: center;
+}
+.chatRoomOptions{
+    display: flex;
+    justify-content: center;
+}
+.messageSenderImage{
+    display: flex;
+    justify-content: center;
+}
+.messageSenderImage:hover{
+    background-color: #d5e1e2;
+}
+.chatRoomContentSection{
+    width: 80% !important;
+    display: inline-block;
+}
+.chatRoomName{
+    font-weight: bold;
+}
+.chatRoomLastMessage{
+
+}
+/*для страницы чат комнаты*/
+.chatRoomContent{
+    display: flex;
+}
+/*участники чата*/
+.chatRoomMembers{
+    width: 30%;
+    background-color: orange;
+}
+/*секция с сообщениями*/
+.chatRoomMessages{
+    width: 70%;
+    background-color: blue;
+    display: flex;
+    flex-direction: column;
+}
+/*область отправки сообщения*/
+.chatRoomSendMessage{
+
+}
+.messageContainer{
+    position: relative;
+    width: 100%;
+    background-color: chartreuse;
+    height: 100%;
+}
+/*класс сообщения*/
+.message{
+    background-color: red;
+    display: flex;
+    max-width: 400px;
+    /*position: absolute;*/
+    left: 0;
+    float: left;
+
+}
+/*класс для моих сообщений*/
+.myMessage{
+    background-color: green;
+    /*position: absolute;*/
+    right: 0;
+    top: 0;
+    float: right;
+
+}
