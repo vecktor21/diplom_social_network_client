@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import global from "../style/Global.module.css";
 import LoadingComponent from "../UI/LoadingComponent";
 import ErrorComponent from "../UI/ErrorComponent";
@@ -9,26 +9,74 @@ import {MessengerService} from "../../services/MessengerService";
 import {IChatRoom} from "../../types/IChatRoom";
 import MessageComponent from "../MessageComponent";
 import {Context} from "../../index";
+import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
+import {IMessageCreateModel} from "../../types/IMessageCreateModel";
 
 const ChatRoomPage = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [isError, setIsError] = useState(false)
-    const [messages, setMessages] = useState([] as IMessage[])
     const [chatRoom, setChatRoom] = useState({} as IChatRoom)
     const params = useParams()
     const {userStore}= useContext(Context)
+    const [newMessage, setNewMessage] = useState({} as IMessageCreateModel)
+
+    //signalR
+    const signalr = require("@microsoft/signalr")
+    const [connection, setConnection] = useState({} as HubConnection)
+    const [chat, setChat] = useState([] as IMessage[])
+    const latestChat = useRef([] as IMessage[])
+
+    // @ts-ignore
+    latestChat.current = chat
+
 
     useEffect(()=>{
-        fetchMessages()
         fetchChatRoom()
+
+        //signalR
+        const newConnection = new HubConnectionBuilder()
+            .withUrl('https://localhost:7021/chat')
+            .withAutomaticReconnect()
+            .build();
+        setConnection(newConnection);
+
     },[])
 
-    const fetchChatRoom = ()=>{
+    //signalR
+    useEffect(() => {
+        if (connection.state) {
+            connection.start()
+                .then(result => {
+                    console.log('Connected!');
+
+                    connection.on('Notify', message => {
+                        /*const updatedChat = [...latestChat.current];
+                        updatedChat.push(message);
+
+                        setChat(updatedChat);*/
+                        console.log(message)
+                    });
+                    connection.on('Receive', (message : IMessage) => {
+                        const updatedChat = [...latestChat.current];
+                        updatedChat.push(message);
+
+                        setChat(updatedChat);
+                    });
+                })
+                .catch(e => console.log('Connection failed: ', e));
+        }
+    }, [connection]);
+
+    const sendMessage = ()=>{
+
+    }
+
+    const fetchChatRoom = async()=>{
         setIsLoading(true)
         try {
-            const response = MessengerService.GetChatRoom(Number(params.chatRoomId))
-            // @ts-ignore
-            setChatRoom(response)
+            const response = await MessengerService.GetChatRoom(Number(params.chatRoomId))
+
+            setChatRoom(response.data)
         }
         catch (e) {
             console.log(e)
@@ -37,23 +85,6 @@ const ChatRoomPage = () => {
         finally {
 
         }{
-            setIsLoading(false)
-        }
-    }
-
-    const fetchMessages=()=>{
-        setIsLoading(true)
-        try {
-            const response = MessengerService.GetChatRoomMessages(Number(params.chatRoomId))
-            // @ts-ignore
-            setMessages(response)
-            console.log(response)
-        }
-        catch (e) {
-            console.log(e)
-            setIsError(true)
-        }
-        finally {
             setIsLoading(false)
         }
     }
@@ -77,7 +108,7 @@ const ChatRoomPage = () => {
                             <div className={global.pageArticle}>{chatRoom.chatRoomName}</div>
                             <div className={style.chatRoomContent}>
                                 <div className={style.chatRoomMessages}>
-                                    {messages.map(message=> {
+                                    {chatRoom.messages.map(message=> {
                                         //console.log(message.sender.userId == userStore?.user.userId)
                                         return <MessageComponent
                                                 message={message}
@@ -87,11 +118,11 @@ const ChatRoomPage = () => {
                                         }
                                     )}
                                     <div className={style.chatRoomSendMessage}>
-                                        секции набора сообщения
-                                    </div>
+                                        <input type="text" value={}/>
+                                    </>
                                 </div>
                                 <div className={style.chatRoomMembers}>
-                                    {chatRoom.chatRoomMembers.map(member=>
+                                    {chatRoom.members.map(member=>
                                         <div key={member.userId}>{member.name}</div>
 
                                     )}

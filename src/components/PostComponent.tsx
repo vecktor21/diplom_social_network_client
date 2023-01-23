@@ -104,7 +104,7 @@ const PostComponent : FC<Props> = observer((props) => {
                 <div className={image.medium}>
                     <img src={consts.API_URL + props.post.author.img} />
                 </div>
-                <div className={post.date}>
+                <div className={global.date}>
                     дата публикации:
                     {props.post.publicationDate.getFullYear()}.
                     {props.post.publicationDate.getMonth()+1}.

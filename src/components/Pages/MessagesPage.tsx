@@ -15,12 +15,11 @@ const MessagesPage = () => {
     useEffect(()=>{
         fetchChatRooms()
     },[])
-    const fetchChatRooms = ()=>{
+    const fetchChatRooms = async()=>{
         try{
             if(userStore?.user.userId){
-                const response = MessengerService.GetUserChatRooms(userStore?.user.userId)
-                // @ts-ignore
-                setChatRooms(response)
+                const response =await MessengerService.GetUserChatRooms(userStore?.user.userId)
+                setChatRooms(response.data)
             }
         }catch (e) {
             console.log(e)
@@ -51,8 +50,8 @@ const MessagesPage = () => {
                         <div className={global.mainSection}>
                             <div className={global.pageArticle}>Сообщения</div>
                             {
-                                chatRooms.map(chat=>
-                                    <ChatRoomComponent chatRoom={chat}/>
+                                chatRooms.map((chat,ind)=>
+                                    <ChatRoomComponent chatRoom={chat} key={ind}/>
                                 )
                             }
                         </div>
