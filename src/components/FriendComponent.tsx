@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {CSSProperties, FC} from 'react';
 import {IFriend} from "../types/IFriend";
 import style from './style/InfoCard.module.css'
 import ProfileImage from "./UI/ProfileImage";
@@ -8,7 +8,8 @@ import routes from '../consts'
 import consts from "../consts";
 
 interface Props {
-    Friend: IFriend
+    Friend: IFriend,
+    Style?: CSSProperties
 }
 
 const FriendComponent : FC <Props>= (props) => {
@@ -18,6 +19,7 @@ const FriendComponent : FC <Props>= (props) => {
         <div
             className={style.card}
             onClick={()=>{navigate(routes.USER_PAGE_ROUTE + "?id="+props.Friend.userId)}}
+            style={props?.Style ? props?.Style: {}}
         >
             <ProfileImage src={consts.API_URL + '/' + props.Friend.profileImage} size={Size.medium}/>
             <div className={style.name}>

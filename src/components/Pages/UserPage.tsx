@@ -31,6 +31,9 @@ import {IAttachment} from "../../types/IAttachment";
 import {IComment} from "../../types/IComment";
 import PostService from "../../services/PostService";
 import {IPostCreateViewModel} from "../../types/IPostCreateViewModel";
+import MessageComponent from "../MessageComponent";
+import {MessengerService} from "../../services/MessengerService";
+import {ICreateChatRoomModel} from "../../types/ICreateChatRoomModel";
 
 const UserPage = observer(() => {
     //пользователь, на странице которого находимся
@@ -44,6 +47,7 @@ const UserPage = observer(() => {
     const [userInfo, setUserInfo] = useState({} as IUserInfo)
     const [friends, setFriends] = useState([] as IFriend[])
     const [groups, setGroups] = useState([] as IGroup[])
+    const [chatRoomId, setChatRoomId] = useState(0)
     const [banList, setBanList] = useState([] as IBannedUser[])
     const [userFiles, setUserFiles] = useState([] as IFile[])
     const [userPosts, setUserPosts] = useState([] as IPost[])
@@ -118,6 +122,7 @@ const UserPage = observer(() => {
         }
 
 
+
         //загрузка проверок на то, нахожусь ли я в друзьях у пользователя:
         FriendsService.IsFriendWith(my_id_temp, id)
             .then(res=>{
@@ -163,6 +168,25 @@ const UserPage = observer(() => {
 
 
         fetchPosts()
+    }
+
+
+    //обработчик отправки сообщения
+    const toChatRoom = async ()=>{
+        if(chatRoomId>0){
+            console.log("UserPage: toChatRoom: ат уже создан, переход прямо к нему по id: ", chatRoomId)
+            navigate(consts.MESSAGES_ROUTE+"/"+chatRoomId)
+        }else{
+            const newChatRoomId =await MessengerService.CreateChatRoom({
+                chatRoomTypeId: 1,
+                adminId: 0,
+                chatRoomName: "",
+                chatRoomMembers: [userStore?.user.userId, id]
+            } as ICreateChatRoomModel)
+            console.log("UserPage: toChatRoom: чата еще нет, создается новый: ", newChatRoomId)
+            navigate(consts.MESSAGES_ROUTE+"/"+newChatRoomId.data)
+
+        }
     }
 
     //загрузка проверок на то, отправил ли я ему запрос в друзья:
@@ -430,7 +454,7 @@ const UserPage = observer(() => {
                                                                 <Button onClick={()=>{setIsFriendRequestModalVisible(true)}}>добавить в друзья</Button>
 
                                                     }
-                                                    <Button onClick={()=>{navigate(routes.CHAT_ROOM_ROUTE + "?id=" + user.userId)}}>отправить сообщение</Button>
+                                                    <Button onClick={toChatRoom}>отправить сообщение</Button>
                                                     <Button onClick={()=>{showMore()}}>подробнее</Button>
                                                 </div>
                                             }

@@ -96,7 +96,7 @@ const FriendsPage = observer(() => {
                             </div>
                             {searchText==""
                                 ?
-                                <div>начните вводить текст чтобы найти статьи</div>
+                                <div>начните вводить текст чтобы найти людей</div>
                                 :
                                 <div>
                                     {

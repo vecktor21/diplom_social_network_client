@@ -32,6 +32,7 @@
     margin: 10px 0;
     color: #4d6da9;
     font-weight: bold;
+    border-bottom: 3px solid #4d6da9;
 }
 .section{
     background-color: white;
@@ -41,10 +42,13 @@
 }
 .searchBlockInSection{
 //background-color: red;
-    margin-bottom: 20px;
+    margin: 0 0 20px 0;
+    width: 100%;
 }
 .searchBlockInSection input{
     border: 2px solid lightgray !important;
+    width: 100%;
+    display: block;
 }
 body{
     background-color: #ebedf4;
@@ -55,16 +59,15 @@ body{
     cursor: pointer;
 }
 .options{
-    height: 20px;
+    height: 25px;
     display: inline-block;
-    width: 20px;
+    width: 25px;
     fill: black;
     cursor: pointer;
     /*transform: translateY(13px);*/
 }
 .options:hover{
-    background-color: yellow;
-    padding: 2px;
+    background-color: lightblue;
     border-radius: 100%;
 }
 .like{
@@ -108,7 +111,7 @@ body{
 }
 
 .searchBlock{
-    width: 50%;
+    width: 400px;
     display: flex;
     align-items: center;
     justify-content: left;
@@ -134,7 +137,7 @@ body{
     right: 15px;
     padding: 0;
     z-index: 1;
-    height: 300px;
+    max-height: 300px;
     overflow: scroll;
 }
 .searchResultItem{
@@ -254,4 +257,21 @@ body{
     top: 20%;
     fill: red;
     color: blue;
+}
+.attachment{
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    box-sizing: border-box;
+    margin: 5px;
+}
+
+
+.send{
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    box-sizing: border-box;
+    margin: 5px 10px 5px 5px;
+    fill: #4d6da9;
 }

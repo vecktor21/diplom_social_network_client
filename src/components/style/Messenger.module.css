@@ -1,14 +1,14 @@
 .chatRoomComponent{
     height: 80px;
-    border-bottom: 2px solid lightblue;
-    margin: 0;
+    border-bottom: 2px solid #d6f1ff;
+    margin: 0 0 10px 0;
     display: flex;
     justify-content: space-between;
     padding: 10px;
     cursor: pointer;
 }
 .chatRoomComponent:hover{
-    background-color: #dcedee;
+    background-color: #d6f1ff;
 }
 .chatRoomComponent .messageSenderImage, .chatRoomComponent .chatRoomOptions{
     width: 10%;
@@ -34,6 +34,8 @@
     font-weight: bold;
 }
 .chatRoomLastMessage{
+    display: flex;
+    justify-content: space-between;
 
 }
 /*для страницы чат комнаты*/
@@ -42,39 +44,78 @@
 }
 /*участники чата*/
 .chatRoomMembers{
+    box-sizing: border-box;
+    padding: 20px;
     width: 30%;
-    background-color: orange;
+    border-left: 2px solid #4d6da9;
+    overflow-y: scroll;
+
+}
+.chatRoomMember{
+    display: flex;
+    cursor: pointer;
+    padding: 5px;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+}
+.chatRoomMember > div{
+    margin-right: 10px;
+}
+.chatRoomMember:hover{
+    background-color: #dce3ef;
 }
 /*секция с сообщениями*/
 .chatRoomMessages{
     width: 70%;
-    background-color: blue;
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
+    max-height: 900px;
+    position: relative;
 }
 /*область отправки сообщения*/
 .chatRoomSendMessage{
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    background-color: white;
+    padding: 5px 0;
 
+}
+.chatRoomSendMessage input{
+    width: 100%;
 }
 .messageContainer{
     position: relative;
     width: 100%;
-    background-color: chartreuse;
     height: 100%;
+    margin-bottom: 10px;
 }
 /*класс сообщения*/
 .message{
-    background-color: red;
+    background-color: #f7f7ff;
     display: flex;
     max-width: 400px;
     /*position: absolute;*/
     left: 0;
     float: left;
+    padding: 10px 10px;
+    margin: 00px 10px 0 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
 
+}
+.messageText{
+
+    display: flex;
+    justify-content: space-between;
+    min-width: 100px;
 }
 /*класс для моих сообщений*/
 .myMessage{
-    background-color: green;
+    background-color: #cee3fc;
     /*position: absolute;*/
     right: 0;
     top: 0;

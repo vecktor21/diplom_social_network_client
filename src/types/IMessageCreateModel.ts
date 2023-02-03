@@ -1,6 +1,6 @@
 export interface IMessageCreateModel {
-    ChatRoomId : number,
-    Text : string,
-    SenderId : number,
-    MessageAttachmentIds : number[]
+    chatRoomId : number,
+    text : string,
+    senderId : number,
+    messageAttachmentIds : number[]
 }
