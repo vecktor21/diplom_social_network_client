@@ -36,13 +36,13 @@ const ChatRoomComponent :FC <Props> = (props) => {
 
     const exitFromChatRoom = (chat:IChatRoom)=>{
         if(chat.chatRoomTypeId == 1){
-            if(window.prompt("вы уверены что хотите удалить чат?")){
+            if(window.confirm("вы уверены что хотите удалить чат?")){
                 MessengerService.DeleteChatRoom(chat.chatRoomId)
             }
         }
         //todo
         if(chat.chatRoomTypeId == 2){
-            if(window.prompt("вы уверены что хотите выйти из чата??")){
+            if(window.confirm("вы уверены что хотите выйти из чата??")){
                 window.alert("выход")
             }
         }

@@ -6,6 +6,9 @@
     width: 30%;
     cursor: pointer;
 }
+.wideCart{
+    width: 100%!important;
+}
 .card:hover{
     -webkit-box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
     -moz-box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
@@ -16,4 +19,10 @@
     padding-top: 10px;
     display: flex;
     flex-direction: column;
+}
+
+.smallPostInfo{
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
 }

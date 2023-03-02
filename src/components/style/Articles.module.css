@@ -10,6 +10,15 @@
     padding: 0;
     box-sizing: border-box;
 }
+.horizontalNavbar{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    height: 30px;
+}
+.horizontalNavbar .selected{
+    border-bottom: 3px solid #4d6da9;
+}
 .navbar li{
     /*background-color: blue;*/
     padding: 5px;

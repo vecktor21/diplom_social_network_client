@@ -34,6 +34,7 @@ import {IPostCreateViewModel} from "../../types/IPostCreateViewModel";
 import MessageComponent from "../MessageComponent";
 import {MessengerService} from "../../services/MessengerService";
 import {ICreateChatRoomModel} from "../../types/ICreateChatRoomModel";
+import {BanService} from "../../services/BanService";
 
 const UserPage = observer(() => {
     //пользователь, на странице которого находимся
@@ -48,7 +49,6 @@ const UserPage = observer(() => {
     const [friends, setFriends] = useState([] as IFriend[])
     const [groups, setGroups] = useState([] as IGroup[])
     const [chatRoomId, setChatRoomId] = useState(0)
-    const [banList, setBanList] = useState([] as IBannedUser[])
     const [userFiles, setUserFiles] = useState([] as IFile[])
     const [userPosts, setUserPosts] = useState([] as IPost[])
     const [friendRequestMessage, setFriendRequestMessage] = useState("Добрый день, я бы хотел добавить вас в друзья :)")
@@ -59,6 +59,9 @@ const UserPage = observer(() => {
     //отправлял ли я запрос в друзья пользователю, на странице которого находимся
     const [isFriendRequestSent, setIsFriendRequestSent] = useState(false)
 
+    //блокировка пользователя
+    const [isBlockModalVisible, setIsBlockModalVisible] = useState(false)
+    const [blockReason, setBlockReason] = useState<string|null>(null )
 
     //загрузка файлов
     //для открытия модального окна
@@ -66,6 +69,8 @@ const UserPage = observer(() => {
     //файлы для загрузки на страницу
     const [filesToUpload, setFilesToUpload] = useState([] as File[])
 
+    //проверка, могу ли я просматривать страницу
+    const [isAllowed, setIsAllowed] = useState(true)
 
     //создание постов
     //модель поста
@@ -76,17 +81,16 @@ const UserPage = observer(() => {
 
     useEffect(()=>{
         fetchData()
-
-
     }, [id])
 
     const fetchData = async()=>{
         setIsLoading(true)
-        //временная переменная пользователя. исопльзуется изза того,
-        // что setUser - асинхронна. хранит общую инфу пользователя на странице которого находися
+        //временная переменная пользователя. используется из-за того,
+        // что setUser - асинхронна. хранит общую инфу пользователя на странице которого находится
         let temp_user = {} as IUser
+        let isAllowedTemp:boolean
         //временная переменная, которая характеризует ID юзера. если авторизован, то равно его ID из UserStore. если нет; -1
-        let my_id_temp
+        let my_id_temp:number
         if(userStore?.user.userId != undefined || userStore?.user.userId != null){
             my_id_temp = userStore?.user.userId
         }else{
@@ -109,11 +113,29 @@ const UserPage = observer(() => {
         //если текущая страница - НЕ моя:
         else {
             UserService.GetUser(id)
-                .then(data=>{
+                .then(async (data)=>{
                     //устанавливаем состояние текущего пользователя
                     setUser(data)
                     //дублируем состояние текущего пользователя во временную переменную
                     temp_user = data
+                    const res =await UserService.CheckIsAllowed(id, my_id_temp)
+                    try{
+                        if(res.status!=200){
+                            window.alert("нет доступа")
+                            console.log("нет доступа")
+                            setIsAllowed(false)
+                            isAllowedTemp=false
+                        }else{
+                            isAllowedTemp=true
+                            setIsAllowed(true)
+                        }
+                    }catch (e){
+                        window.alert("нет доступа")
+                        console.log("нет доступа")
+                        setIsAllowed(false)
+                        isAllowedTemp=false
+                        return
+                    }
                 })
                 .catch((e : AxiosError)=>{
                     id = 0
@@ -140,7 +162,7 @@ const UserPage = observer(() => {
         //загрузка другой инфы пользователя
         //если мы не авторизованы, то отпарвляем currentUserId -1, то есть такая вот проверка на авторизацияю.
         // скорее всего удалится
-        let infoResponse = UserService.GetUserInfo(id, my_id_temp)
+        let infoResponse = await UserService.GetUserInfo(id, my_id_temp)
         setUserInfo(infoResponse)
 
 
@@ -150,9 +172,6 @@ const UserPage = observer(() => {
         })
 
 
-        //подгрузка списка заблокированных пользователей
-        const banResult = UserService.GetBanList(id)
-        setBanList(banResult)
 
         //подгрузка подписок
         UserService.GetUserGroups(id)
@@ -224,6 +243,23 @@ const UserPage = observer(() => {
             setIsError(true)
         }
         setIsLoading(false)
+    }
+
+    const blockUser = async()=>{
+        if(userStore?.user && user.userId){
+            try {
+                setIsLoading(true)
+                const res = await BanService.BanUser(user.userId, userStore.user.userId, blockReason, null)
+                console.log(res.status)
+            }catch (e) {
+                setIsError(true)
+            }
+            setIsLoading(false)
+            setIsBlockModalVisible(false)
+        }
+        else{
+            window.alert("ошибка")
+        }
     }
 
     //todo
@@ -370,6 +406,18 @@ const UserPage = observer(() => {
                             ? <ErrorComponent/>
                             :
                             <div className={global.pageContent}>
+                                {/*модальное окно блокировки пользователя*/}
+                                <Modal isVisible={isBlockModalVisible} setIsVisible={setIsBlockModalVisible}>
+                                    <div>
+                                        <label htmlFor="reason">Причина блокировки</label>
+                                        <input
+                                            type="text" id="reason"
+                                            value={blockReason ? blockReason : ""}
+                                            onChange={e=>{setBlockReason(e.target.value)}}
+                                        />
+                                    </div>
+                                    <button onClick={blockUser}>Заблокировать</button>
+                                </Modal>
 
                                 {/*модальное окно загрузки файлов*/}
                                 <Modal isVisible={isFriendRequestModalVisible} setIsVisible={setIsFriendRequestModalVisible}>
@@ -441,12 +489,12 @@ const UserPage = observer(() => {
                                                     <Button onClick={()=>{showMore()}}>подробнее</Button>
                                                 </div>
                                                 :
-                                                <div className={page.infoRight}>
+                                                isAllowed ? <div className={page.infoRight}>
                                                     {
                                                         isFriendWith
-                                                        ?
+                                                            ?
                                                             <Button onClick={()=>{removeFromFriends()}}>удалить из друзей</Button>
-                                                        :
+                                                            :
                                                             isFriendRequestSent
                                                                 ?
                                                                 <Button onClick={()=>{cancelFriendRequest()}}>отменить запрос в друзья</Button>
@@ -456,35 +504,41 @@ const UserPage = observer(() => {
                                                     }
                                                     <Button onClick={toChatRoom}>отправить сообщение</Button>
                                                     <Button onClick={()=>{showMore()}}>подробнее</Button>
-                                                </div>
+                                                    <Button onClick={()=>{setIsBlockModalVisible(true)}}>заблокировать</Button>
+                                                </div> : null
                                             }
                                         </div>
-                                        <div className={page.additionalInfoSection}>
-                                            <NavLink to={routes.IMAGES_PAGE_ROUTE + "?userId="+id}>
-                                                {`${userFiles.filter(file=>{
-                                                    return file.fileType=="image"
-                                                }).length} Изображений`}
-                                            </NavLink>
-                                            <NavLink to={routes.VIDEOS_PAGE_ROUTE + "?userId="+id}>
-                                                {`${userFiles.filter(file=>{
-                                                    return file.fileType=="video"
-                                                }).length} Видеозапией`}
-                                            </NavLink>
-                                            <NavLink to={routes.DOCUMENTS_PAGE_ROUTE + "?userId="+id}>
-                                                {`${userFiles.filter(file=>{
-                                                    return file.fileType=="document"
-                                                }).length} Документа (-ов)`}
-                                            </NavLink>
-                                            <NavLink to={routes.FRIENDS_ROUTE + "?id="+id}>
-                                                Друзья {` ${friends.length}`}
-                                            </NavLink>
-                                            <NavLink to={routes.GROUPS_ROUTE + "?id="+id}>
-                                                Подписки {` ${groups.length}`}
-                                            </NavLink>
-                                            <NavLink to={routes.USER_ARTICLES_NAVIGATION_ROUTE + "/"+id}>
-                                                Статьи
-                                            </NavLink>
-                                        </div>
+                                        {isAllowed
+                                            ?
+                                            <div className={page.additionalInfoSection}>
+                                                <NavLink to={routes.IMAGES_PAGE_ROUTE + "?userId=" + id}>
+                                                    {`${userFiles.filter(file => {
+                                                        return file.fileType == "image"
+                                                    }).length} Изображений`}
+                                                </NavLink>
+                                                <NavLink to={routes.VIDEOS_PAGE_ROUTE + "?userId=" + id}>
+                                                    {`${userFiles.filter(file => {
+                                                        return file.fileType == "video"
+                                                    }).length} Видеозапией`}
+                                                </NavLink>
+                                                <NavLink to={routes.DOCUMENTS_PAGE_ROUTE + "?userId=" + id}>
+                                                    {`${userFiles.filter(file => {
+                                                        return file.fileType == "document"
+                                                    }).length} Документа (-ов)`}
+                                                </NavLink>
+                                                <NavLink to={routes.FRIENDS_ROUTE + "?id=" + id}>
+                                                    Друзья {` ${friends.length}`}
+                                                </NavLink>
+                                                <NavLink to={routes.GROUPS_ROUTE + "?id=" + id}>
+                                                    Подписки {` ${groups.length}`}
+                                                </NavLink>
+                                                <NavLink to={routes.USER_ARTICLES_NAVIGATION_ROUTE + "/" + id}>
+                                                    Статьи
+                                                </NavLink>
+                                            </div>
+                                            :
+                                            <div></div>
+                                        }
                                     </div>
                                 </div>
                                 {user.userId == userStore?.user.userId &&
@@ -494,12 +548,15 @@ const UserPage = observer(() => {
                                     </div>
                                 }
                                 {
-                                    userPosts.length == 0
+                                    isAllowed
                                     ?
-                                        <div>еще нет постов</div>
-                                    :
+                                        <div>
+                                            {userPosts.length == 0
+                                            ?
+                                            <div>еще нет постов</div>
+                                            :
 
-                                        userPosts.map(post=>
+                                            userPosts.map(post=>
                                             <PostComponent
                                                 post={post}
                                                 key={post.postId}
@@ -509,7 +566,13 @@ const UserPage = observer(() => {
                                                 }
                                                 deletePost={()=>{deletePost(post.postId)}}
                                             />
-                                        )
+                                            )}
+                                        </div>
+
+                                    :
+                                        <div>
+                                            у вас нет доступа
+                                        </div>
                                 }
                             </div>
                         }

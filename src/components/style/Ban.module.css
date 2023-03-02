@@ -1,0 +1,46 @@
+.bannedUser{
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 100px;
+}
+.bannedUser:hover{
+    background-color: #d6f1ff;
+}
+.bannedUser>div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.bannedUser>div:first-child{
+    width: 15%;
+}
+.bannedUser>div:nth-child(2){
+    width: 70%;
+    justify-content: left;
+    text-align: left;
+    display: block;
+    box-sizing: border-box;
+}
+
+.bannedUser>div:nth-child(2)>div{
+    text-align: left;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.bannedUser>div:nth-child(2)>div:nth-child(1){
+    height: 30%;
+}
+.bannedUser>div:nth-child(2)>div:nth-child(2){
+    height: 40%;
+}
+.bannedUser>div:nth-child(2)>div:nth-child(3){
+    height: 30%;
+}
+.bannedUser>div:nth-child(3){
+    width: 15%;
+}
+
+

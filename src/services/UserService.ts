@@ -23,49 +23,36 @@ export default class UserService {
         const response = await api.get<IUser>("/api/user?userId="+userId)
         return response.data
     }
-    static GetUserInfo(userId: number, currentUserId: number) : IUserInfo{
-        return {
-            age: 20,
-            dateOfBirth: "26-12-2001",
-            city: "Нур-Султан",
-            country: {
-                countryNameEn: "Kaz",
-                countryNameRu: "Каз",
-            }as ICountry,
-            status: "какая-то пацанская циатата ауф",
-            education: "ЕНУ им Л.Н. Гумилева",
-            userInfoPrivacyType: {
-                userInfoPrivacyTypeName: "PublicPage"
-            } as IUserInfoPrivacyType
-        } as IUserInfo
+    static async GetUserInfo(userId: number, currentUserId: number) {
+        const response = await api.get<IUserInfo>("/api/User/GetUserInfo/"+userId + "?currentUserId="+currentUserId);
+        response.data.dateOfBirth=GlobalService.JsonDateStringToDateObj(response.data.dateOfBirth)
+        return  response.data
+    }
+    static async CheckIsAllowed(targetUser:number, currentUser:number){
+        const res = await api.get<boolean>(`/api/User/IsAllowed?targetUserId=${targetUser}&currentUserId=${currentUser}`)
+        return res
     }
 
-    static GetBanList(userId: number) : IBannedUser[]{
-        return [
-            {
-                banUserId: 11,
-                name: "жук",
-                surname: "павук",
-                nickname: "kopeshylu",
-                profileImage: "./src/Placeholders/imgPlaceholder.png"
-            },
-            {
-                banUserId: 10,
-                name: "жук",
-                surname: "павук",
-                nickname: "kopeshylu",
-                profileImage: "./src/Placeholders/imgPlaceholder.png"
-            },
-            {
-                banUserId: 12,
-                name: "жук",
-                surname: "павук",
-                nickname: "kopeshylu",
-                profileImage: "./src/Placeholders/imgPlaceholder.png"
-            },
-        ]
+    static async ChangeUserInfo(userInfo: IUserInfo){
+        const res = await api.post("/api/User/ChangeUserInfo", userInfo)
+        console.log(res.data)
+        console.log(res.status)
+        console.log(res.headers)
+    }
+    static async ChangeUser(user: IUser){
+        const res = await api.post("/api/User/ChangeUser", user)
+        console.log(res.data)
+        console.log(res.status)
+        console.log(res.headers)
     }
 
+    static async ChangeProfileImage(userId: number, newImageId: number){
+        const res = await api.post(`/api/User/ChangeUserProfileImage?userId=${userId}&newImageId=${newImageId}`)
+        console.log(res.data)
+        console.log(res.status)
+        console.log(res.headers)
+
+    }
 
 
 
@@ -89,10 +76,6 @@ export default class UserService {
     static async GetUsers(): Promise<AxiosResponse<IUser[]>>{
         const response = await api.get("/api/user/users")
         return response
-    }
-    //todo
-    static Like(userId:number,objectId:number, objectType:ObjectTypes){
-
     }
     //todo
     static AddToFavorites(userId:number,objectId:number, objectType:ObjectTypes){

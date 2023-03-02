@@ -34,17 +34,13 @@ const AuthPage = observer(() => {
     const {userStore} = useContext(Context)
     const [countries, setCountries] = useState([] as ICountry[])
     useEffect(()=>{
-        const response = CountryService.GetCountries()
+        fetchCountries()
+    },[])
+
+    const fetchCountries =async ()=>{
+        const response = await CountryService.GetCountries()
         setCountries(response)
         setIsLoading(false)
-    },[])
-    const test = ()=>{
-        if(page==3){
-            setPage(0)
-        }
-        else{
-            setPage(page+1)
-        }
     }
     const login = ()=>{
         setIsLoading(true)

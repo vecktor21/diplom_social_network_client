@@ -5,5 +5,6 @@ export interface IUser {
     surname: string,
     nickname: string,
     role: string,
-    profileImage: string
+    profileImage: string,
+    email: string
 }

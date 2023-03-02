@@ -1,6 +1,5 @@
-import React, {ReactNode, useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {observable} from "mobx";
 import global from '../style/Global.module.css'
 import postStyle from '../style/Post.module.css'
 import {observer} from "mobx-react-lite";
@@ -11,18 +10,12 @@ import ImageViewer from "react-simple-image-viewer";
 import {ReactComponent as Like} from "../assets/heart-icon.svg";
 import {ReactComponent as Comment} from "../assets/comment-icon.svg";
 import {ReactComponent as Share} from "../assets/share-icon.svg";
-import {IUser} from "../../types/IUser";
-import {IAuthorInfo} from "../../types/IAuthorInfo";
-import routes from "../../consts";
+import consts from "../../consts";
 import {Context} from "../../index";
 import {IComment} from "../../types/IComment";
-import CommentComponent from "../CommentComponent";
 import ErrorComponent from "../UI/ErrorComponent";
 import {AxiosResponse} from "axios";
-import {IFile} from "../../types/IFile";
 import FileService from "../../services/FileService";
-import consts from "../../consts";
-import post from "../style/Post.module.css";
 import {IAttachment} from "../../types/IAttachment";
 import LoadingComponent from "../UI/LoadingComponent";
 import Modal from "../UI/Modal";
@@ -30,6 +23,8 @@ import FileUploadComponent from "../UI/FileUploadComponent";
 import {IPostCommentCreateModel} from "../../types/IPostCommentCreateModel";
 import {CommentService} from "../../services/CommentService";
 import LikeService from "../../services/LikeService";
+import ProfileImage from "../UI/ProfileImage";
+import {Size} from "../../types/Size";
 
 const PostPage = observer(() => {
     const {userStore} = useContext(Context)
@@ -239,8 +234,8 @@ const PostPage = observer(() => {
                             />
 
                             <div className={postStyle.authorInfo} onClick={()=>{navigate( post.postType =="user"? consts.USER_PAGE_ROUTE  + "?id=" + post.author.authorId : consts.GROUP_ROUTE + "?id=" + post.author.authorId)}}>
-                                <div className={image.medium}>
-                                    <img src={consts.API_URL + post.author.img} />
+                                <div>
+                                    <ProfileImage src={consts.API_URL + post.author.img} size={Size.medium}/>
                                 </div>
                                 <div className={global.date}>
                                     дата публикации:

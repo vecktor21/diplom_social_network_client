@@ -1,7 +1,8 @@
 export interface IBannedUser {
-    banUserId: number,
-    name: string,
-    surname: string,
-    nickname: string,
-    profileImage: string
+    blockedUserId: number,
+    blockedUserName: string,
+    blockedUserImage: string,
+    reason: string,
+    dateFrom: Date,
+    dateTo: Date
 }

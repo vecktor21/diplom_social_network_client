@@ -20,6 +20,17 @@ export default class FileService {
         })
         return result
     }
+    static async UploadFile(formData: FormData, groupId?: number){
+        const headers = { "Content-Type": "multipart/form-data" }
+        if(groupId){
+            // @ts-ignore
+            headers["Group"] = groupId
+        }
+        const result = await api.put<IFile>(consts.API_URL + `/api/file`, formData, {
+            headers: headers
+        })
+        return result
+    }
     static async DeleteFile(fileId: number, groupId? : number){
         return await api.delete<IFile[]>(consts.API_URL + `/api/File/${fileId}${groupId ? "/"+groupId : ""}`)
     }

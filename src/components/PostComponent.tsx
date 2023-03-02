@@ -18,6 +18,8 @@ import consts from '../consts'
 import {ReactComponent as Delete} from "./assets/delete-icon.svg";
 import postStyle from "./style/Post.module.css";
 import LikeService from "../services/LikeService";
+import {Size} from "../types/Size";
+import ProfileImage from "./UI/ProfileImage";
 
 interface Props {
     post: IPost
@@ -101,8 +103,8 @@ const PostComponent : FC<Props> = observer((props) => {
 
     return (
         <div className={post.post}><div className={postStyle.authorInfo} onClick={()=>{navigate( props.post.postType =="user"? consts.USER_PAGE_ROUTE  + "?id=" + props.post.author.authorId : consts.GROUP_ROUTE + "?id=" + props.post.author.authorId)}}>
-                <div className={image.medium}>
-                    <img src={consts.API_URL + props.post.author.img} />
+                <div >
+                    <ProfileImage src={`${consts.API_URL}/${props.post.author.img}`} size={Size.medium}/>
                 </div>
                 <div className={global.date}>
                     дата публикации:

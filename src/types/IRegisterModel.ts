@@ -1,6 +1,7 @@
 import {ICountry} from "./ICountry";
 import {IUserInfoPrivacyType} from "./IUserInfoPrivacyType";
 import {IUserInfo} from "./IUserInfo";
+import {IUserInfoCreateModel} from "./IUserInfoCreateModel";
 
 export interface IRegisterModel {
     login: string
@@ -10,6 +11,6 @@ export interface IRegisterModel {
     surname: string
     password: string
     confirmPassword: string
-    userInfo: IUserInfo
+    userInfo: IUserInfoCreateModel
     role: string
 }

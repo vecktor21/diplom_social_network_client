@@ -1,11 +1,9 @@
 import {ICountry} from "./ICountry";
 import {IUserInfoPrivacyType} from "./IUserInfoPrivacyType";
 
-export interface IUserInfo {
-    userInfoId: number,
-    userId: number,
+export interface IUserInfoCreateModel {
     age: number,
-    dateOfBirth: Date,
+    dateOfBirth: string,
     city: string,
     country: ICountry,
     status: string,
