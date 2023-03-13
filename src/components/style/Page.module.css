@@ -35,6 +35,11 @@
     display: flex;
     justify-content: space-between;
 }
+.infoRight > svg{
+    position: relative !important;
+    top: -20px !important;
+    left: -5px !important;
+}
 .infoRight button{
     margin-right: 20px;
     color: black;

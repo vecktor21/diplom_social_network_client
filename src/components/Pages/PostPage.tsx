@@ -9,7 +9,7 @@ import image from "../style/Image.module.css";
 import ImageViewer from "react-simple-image-viewer";
 import {ReactComponent as Like} from "../assets/heart-icon.svg";
 import {ReactComponent as Comment} from "../assets/comment-icon.svg";
-import {ReactComponent as Share} from "../assets/share-icon.svg";
+import {ReactComponent as Favorite} from "../assets/favorite-icon.svg";
 import consts from "../../consts";
 import {Context} from "../../index";
 import {IComment} from "../../types/IComment";
@@ -25,6 +25,8 @@ import {CommentService} from "../../services/CommentService";
 import LikeService from "../../services/LikeService";
 import ProfileImage from "../UI/ProfileImage";
 import {Size} from "../../types/Size";
+import FavoriteService from "../../services/FavoriteService";
+import {FavoriteType} from "../../types/FavoriteType";
 
 const PostPage = observer(() => {
     const {userStore} = useContext(Context)
@@ -42,6 +44,7 @@ const PostPage = observer(() => {
     const [filesToUpload, setFilesToUpload] = useState([] as File[])
     const [isLiked, setIsLiked] = useState(false)
     const navigate = useNavigate()
+    const [isFavorite, setIsFavorite] = useState(false)
     const [newComment, setNewComment] = useState({
         postId: 0,
         message: '',
@@ -69,10 +72,7 @@ const PostPage = observer(() => {
         fetchPost()
 
         console.log(post.comments)
-/*
-        postResult.comments.forEach(comment=>{
-            iterateComments(comment)
-        })*/
+        fetchFavorite()
     }, [])
     console.log(post.comments)
 
@@ -142,8 +142,26 @@ const PostPage = observer(() => {
     const commentAction = ()=>{
         //window.location.reload()
     }
-    const shareAction = ()=>{
-        alert("репостнул")
+    const fetchFavorite=async()=>{
+        if(!userStore?.user){
+            return
+        }
+        const res = await FavoriteService.IsFavorite(userStore?.user.userId, postId, FavoriteType.Post)
+        setIsFavorite(res)
+    }
+
+    const favoriteAction = ()=>{
+        if(!userStore?.user){
+            return
+        }
+        if(!isFavorite){
+            FavoriteService.SetFavoritePost(userStore?.user.userId, post.postId)
+            setIsFavorite(true)
+        }else{
+
+            FavoriteService.RemoveFavoritePost(userStore?.user.userId, post.postId)
+            setIsFavorite(false)
+        }
     }
 
     //ответ на сообщение
@@ -302,8 +320,8 @@ const PostPage = observer(() => {
                                 >{commentCount} <Comment className={global.comment}/></div>
                                 <div
                                     className={global.button}
-                                    onClick={()=>{shareAction()}}
-                                ><Share className={global.comment}/></div>
+                                    onClick={()=>{favoriteAction()}}
+                                ><Favorite className={global.favorite + " " +( isFavorite?global.favorited:"")}/></div>
                                 <div
                                     className={global.button}
                                     onClick={()=>{setIsCommentReplyModalVisible(true)}}

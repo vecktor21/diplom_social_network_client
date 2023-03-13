@@ -12,12 +12,9 @@ import UserService from "../../services/UserService";
 import {Context} from "../../index";
 const ArticlesPage = observer(() => {
     const [selectedSection, setSelectedSection] = useState(1)
-    const {userStore, userFavoritesStore} = useContext(Context)
+    const {userStore} = useContext(Context)
     useEffect(()=>{
-        if(userStore?.user.userId != undefined || userStore?.user.userId != null){
-            const favsResponse = UserService.GetFavorites(userStore?.user.userId)
-            userFavoritesStore?.setFavorites(favsResponse)
-        }
+
     },[])
     return (
         <div className={global.pageContent}>

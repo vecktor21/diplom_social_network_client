@@ -8,40 +8,57 @@ import {useNavigate} from "react-router-dom";
 import routes from '../consts'
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import UserService from "../services/UserService";
-import {ObjectTypes} from "../types/ObjectTypes";
 import ArticlesService from "../services/ArticlesService";
+import LikeService from "../services/LikeService";
+import FavoriteService from "../services/FavoriteService";
+import {FavoriteType} from "../types/FavoriteType";
 
 interface Props {
     article: IArticle
 }
 const ArticleObjectComponent : FC<Props> = observer((props) => {
     const navigate = useNavigate()
-    
-    const {userStore, userFavoritesStore} = useContext(Context)
-    const [isFav, setIsFav] = useState(false)
+    const [isLiked,setIsLiked]=useState(false)
+    const {userStore} = useContext(Context)
+    const [isFavorite, setIsFavorite] = useState(false)
     useEffect(()=>{
-        if(userFavoritesStore?.Favorites != undefined){
-            setIsFav(userFavoritesStore?.Favorites.filter(f=>f.ObjectId==props.article.articleId).length>0)
-        }
+        fetchFavorite()
+        setIsLiked(LikeService.IsLiked(userStore?.user.userId, props.article.likes))
     }, [])
-    //todo
-    const like=(objectId:number)=>{
-        if(userStore?.user.userId!=undefined){
-            UserService.AddToFavorites(userStore?.user.userId, objectId, ObjectTypes.ArticleFav)
-            alert("лайкнул")
+    //обработка лайков
+    const likeHandler = async ()=>{
+        if(userStore?.isAuth){
+            await LikeService.LikeArticle(userStore?.user.userId, isLiked, props.article.articleId)
+            if(isLiked){
+                alert("убрал лайк")
+            }else{
+
+                alert("лайкнул")
+            }
+            setIsLiked(!isLiked)
         }else{
-            alert("ошибка, вы не вошли")
+            alert("вы не вошли")
         }
     }
-    //todo
-    const addToFavorite=(objectId:number)=>{
-        if(userStore?.user.userId!=undefined){
-            UserService.AddToFavorites(userStore?.user.userId, objectId, ObjectTypes.ArticleFav)
-            alert("добавил в избранное")
-        }else{
-            alert("ошибка, вы не вошли")
+    const favoriteAction = ()=>{
+        if(!userStore?.user){
+            return
         }
+        if(!isFavorite){
+            FavoriteService.SetFavoriteArticle(userStore?.user.userId, props.article.articleId)
+            setIsFavorite(true)
+        }else{
+
+            FavoriteService.RemoveFavoriteArticle(userStore?.user.userId, props.article.articleId)
+            setIsFavorite(false)
+        }
+    }
+    const fetchFavorite=async()=>{
+        if(!userStore?.user){
+            return
+        }
+        const res = await FavoriteService.IsFavorite(userStore?.user.userId, props.article.articleId, FavoriteType.Article)
+        setIsFavorite(res)
     }
 
     //удаление статьи:
@@ -97,11 +114,11 @@ const ArticleObjectComponent : FC<Props> = observer((props) => {
                         }`}
                         onClick={(e)=>{
                             e.stopPropagation()
-                            like(props.article.articleId)
+                            likeHandler()
                         }}
                     />
                     <Favorite
-                        className={`${ isFav
+                        className={`${ isFavorite
                             ?
                             global.favorite + " " + global.button + " " + global.favorited
                             :
@@ -109,7 +126,7 @@ const ArticleObjectComponent : FC<Props> = observer((props) => {
                         }`}
                         onClick={(e)=>{
                             e.stopPropagation()
-                            addToFavorite(props.article.articleId)
+                            favoriteAction()
                         }}
                     />
                 </div>

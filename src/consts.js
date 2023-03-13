@@ -15,7 +15,7 @@ export default  {
     USER_ARTICLES_ROUTE: "/user/articles/:userId",
     GROUPS_ROUTE: "/groups",
     GROUP_ROUTE: "/group",
-    GROUP_BLACK_LIST_ROUTE: "/group/banned",
+    GROUP_MEMBERS_ROUT: "/group/members",
     ARTICLE_ROUTE: "/article/:articleId",
     ARTICLE_PAGE_CREATE_ROUTE: "/article/create-page/:articleId",
     ARTICLE_PAGE_UPDATE_ROUTE: "/article/update-page/:articleId/:articlePageId",

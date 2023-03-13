@@ -13,6 +13,8 @@ import consts from "../../consts";
 import routes from "../../consts";
 import LoadingComponent from "../UI/LoadingComponent";
 import ErrorComponent from "../UI/ErrorComponent";
+import {UserShortViewModel} from "../../types/UserShortViewModel";
+import UserComponent from "../UserComponent";
 
 const FriendsPage = observer(() => {
     const [params] = useSearchParams()
@@ -21,8 +23,8 @@ const FriendsPage = observer(() => {
     const [searchText, setSearchText] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     const [isSearchLoading, setIsSearchLoading] = useState(false)
-    const [friends, setFriends] = useState([] as IFriend[])
-    const [foundFriends, setFoundFriends] = useState([] as IFriend[])
+    const [friends, setFriends] = useState([] as UserShortViewModel[])
+    const [foundFriends, setFoundFriends] = useState([] as UserShortViewModel[])
     const navigate = useNavigate()
 
     const searchFriends = ()=>{
@@ -43,10 +45,10 @@ const FriendsPage = observer(() => {
                     console.log("response.data (before): ")
                     console.log(response.data)
                     response.data.sort((a, b)=>{
-                        if(a.name<b.name){
+                        if(a.fullName<b.fullName){
                             return -1
                         }
-                        else if(a.name==b.name){
+                        else if(a.fullName==b.fullName){
                             return 0
                         }
                         else{
@@ -106,12 +108,7 @@ const FriendsPage = observer(() => {
                                             :
                                             <div>
                                                 {foundFriends.map(a=>
-                                                    <div key={a.userId}
-                                                         onClick={()=>{navigate(consts.USER_PAGE_ROUTE + "?id=" + a.userId)}}
-                                                    >
-                                                        {/*<ProfileImage src={`${consts.API_URL}/${a.profileImage}`} size={Size.small}/>*/}
-                                                        {`${a.name} ${a.surname} ${a.nickname}`}
-                                                    </div>
+                                                    <FriendComponent user={a}/>
                                                 )}
                                             </div>
                                     }
@@ -124,7 +121,7 @@ const FriendsPage = observer(() => {
                             :
                             <div className={global.gridView} >
                                 {friends.map(friend=>
-                                    <FriendComponent Friend={friend}/>
+                                    <FriendComponent user={friend}/>
                                 )}
                             </div>
                         }

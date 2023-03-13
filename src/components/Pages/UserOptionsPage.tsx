@@ -16,7 +16,7 @@ import UserFavorites from "../panels/UserFavorites";
 
 const UserOptionsPage = () => {
     const [selectedSection, setSelectedSection] = useState(1)
-    const {userStore, userFavoritesStore} = useContext(Context)
+    const {userStore} = useContext(Context)
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     useEffect(()=>{

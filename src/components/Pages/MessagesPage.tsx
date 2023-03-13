@@ -21,6 +21,7 @@ import routes from "../../consts";
 import ProfileImage from "../UI/ProfileImage";
 import {Size} from "../../types/Size";
 import {ReactComponent as Cross} from "../assets/cross-icon.svg";
+import {UserShortViewModel} from "../../types/UserShortViewModel";
 
 const MessagesPage = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -30,9 +31,9 @@ const MessagesPage = () => {
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [searchText, setSearchText] = useState("")
     const [isSearchLoading, setIsSearchLoading] = useState(false)
-    const [foundUsers, setFoundUsers] = useState([] as IFriend[])
+    const [foundUsers, setFoundUsers] = useState([] as UserShortViewModel[])
     const navigate = useNavigate()
-    const [usersToAdd, setUsersToAdd] = useState([] as IFriend[])
+    const [usersToAdd, setUsersToAdd] = useState([] as UserShortViewModel[])
     //проверка валидности формы создания чата
     const [isValid, setIsValid] = useState(false)
     const [newChatRoom, setNewChatRoom] = useState({
@@ -119,7 +120,7 @@ const MessagesPage = () => {
         }
     }
 
-    const addUserHandler = (user: IFriend)=>{
+    const addUserHandler = (user: UserShortViewModel)=>{
         if(usersToAdd.filter(u=>u.userId==user.userId).length==0){
             setUsersToAdd((u)=>[...u, user])
         }
@@ -189,7 +190,7 @@ const MessagesPage = () => {
                                                             }}>
                                                                 {foundUsers.map(user=>
                                                                     <div key={user.userId} className={global.searchResultItem}>
-                                                                        {user.name} {user.surname} {user.nickname}
+                                                                        {user.fullName}
                                                                         <button onClick={()=>{addUserHandler(user)}}>добавить</button>
                                                                     </div>
                                                                 )}
@@ -202,7 +203,7 @@ const MessagesPage = () => {
                                     }
                                     <div>
                                         {usersToAdd.map(user=>{
-                                            const name = user.name + " " + user.surname
+                                            const name = user.fullName
                                             return <div
                                                 key={user.userId}
                                                 className={style.card}
@@ -216,13 +217,6 @@ const MessagesPage = () => {
                                                             name.slice(0, 17) + "..."
                                                             :
                                                             name}
-                                                    </span>
-                                                    <span>
-                                                        {/*{props.Friend.nickname.length > 20 ?
-                                                            props.Friend.nickname.slice(0, 17) + "..."
-                                                            :
-                                                            props.Friend.nickname}*/}
-                                                        {user.nickname}
                                                     </span>
                                                 </div>
 

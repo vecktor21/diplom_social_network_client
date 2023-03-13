@@ -22,6 +22,10 @@ import {IFile} from "../../types/IFile";
 import FileUploadComponent from "../UI/FileUploadComponent";
 import Modal from "../UI/Modal";
 import {IPostCreateViewModel} from "../../types/IPostCreateViewModel";
+import {ReactComponent as Favorite} from "../assets/favorite-icon.svg";
+import FavoriteService from "../../services/FavoriteService";
+import {FavoriteType} from "../../types/FavoriteType";
+import GroupEditModal from "../UI/GroupEditModal";
 const GroupPage = observer(() => {
     const [params] = useSearchParams()
     const id = Number(params.get("id"))
@@ -34,6 +38,7 @@ const GroupPage = observer(() => {
         isMember: false
     } as GroupBelonging)
     const [groupPosts, setGroupPosts] = useState([] as IPost[])
+    const [isFavorite, setIsFavorite] = useState(false)
 
     //загрузка файлов
     const [filesToUpload, setFilesToUpload] = useState([] as File[])
@@ -46,12 +51,34 @@ const GroupPage = observer(() => {
     //открытие соответствующих модальных окон
     const [isPostFilesUploadModalVisible, setIsPostFilesUploadModalVisible] = useState(false)
     const [isPostCreateModelVisible, setIsPostCreateModelVisible] = useState(false)
+    const [isGroupOptionsVisible, setIsGroupOptionsVisible] = useState(false)
 
     useEffect(()=>{
         fetchGroup()
         console.log(isError)
+        fetchFavorite()
     }, [])
 
+    const favoriteAction = ()=>{
+        if(!userStore?.user){
+            return
+        }
+        if(!isFavorite){
+            FavoriteService.SetFavoriteGroup(userStore?.user.userId, id)
+            setIsFavorite(true)
+        }else{
+
+            FavoriteService.RemoveFavoriteGroup(userStore?.user.userId, id)
+            setIsFavorite(false)
+        }
+    }
+    const fetchFavorite=async()=>{
+        if(!userStore?.user){
+            return
+        }
+        const res = await FavoriteService.IsFavorite(userStore?.user.userId, id, FavoriteType.Group)
+        setIsFavorite(res)
+    }
     const fetchGroup = async ()=>{
         if(id!=null){
 
@@ -152,10 +179,6 @@ const GroupPage = observer(() => {
                 setIsLoading(false)
             })
     }
-    //TODO
-    const edit = ()=>{
-        alert("вы редактировали")
-    }
 
     const cancelRequest = ()=>{
         setIsLoading(true)
@@ -242,7 +265,8 @@ const GroupPage = observer(() => {
                     <ErrorComponent/>
                     :
                     <div >
-
+                        {/*модальное окно настроек*/}
+                        <GroupEditModal isVisible={isGroupOptionsVisible} setIsVisible={setIsGroupOptionsVisible} isAdmin={groupBelonging.isAdmin} group={group}/>
                         {/*модальное окно создания поста*/}
                         <Modal isVisible={isPostCreateModelVisible} setIsVisible={setIsPostCreateModelVisible}>
                             <label htmlFor="postTitle">заголовок поста</label>
@@ -296,38 +320,82 @@ const GroupPage = observer(() => {
                                                     ?
                                                     <div>
                                                         <div className={page.infoRight}>
-                                                            <Button onClick={()=>{edit()}}>редактировать (как модератор)</Button>
+                                                            <Button onClick={()=>{setIsGroupOptionsVisible(true)}}>редактировать</Button>
                                                         </div>
-                                                        {groupBelonging.isAdmin &&
-                                                        <div className={page.infoRight}>
-                                                            <Button onClick={()=>{edit()}}>редактировать (как админ)</Button>
-                                                        </div>
-                                                        }
 
                                                     </div>
                                                     :
                                                     <div className={page.infoRight}>
                                                         <Button onClick={()=>{unsubscribe()}}>отписаться</Button>
+                                                        <Favorite
+                                                            className={`${ isFavorite
+                                                                ?
+                                                                global.favorite + " " + global.button + " " + global.favorited
+                                                                :
+                                                                global.favorite + " " + global.button
+                                                            }`}
+                                                            onClick={(e)=>{
+                                                                e.stopPropagation()
+                                                                favoriteAction()
+                                                            }}
+                                                        />
                                                     </div>
                                                 :
                                                 group.isPublic
                                                     ?
                                                     <div className={page.infoRight}>
                                                         <Button onClick={()=>{subscribe()}}>подписаться</Button>
+                                                        <Favorite
+                                                            className={`${ isFavorite
+                                                                ?
+                                                                global.favorite + " " + global.button + " " + global.favorited
+                                                                :
+                                                                global.favorite + " " + global.button
+                                                            }`}
+                                                            onClick={(e)=>{
+                                                                e.stopPropagation()
+                                                                favoriteAction()
+                                                            }}
+                                                        />
                                                     </div>
                                                     :
                                                     groupBelonging.isRequestSent
                                                         ?
                                                         <div className={page.infoRight}>
                                                             <Button onClick={()=>{cancelRequest()}}>отменить запрос</Button>
+                                                            <Favorite
+                                                                className={`${ isFavorite
+                                                                    ?
+                                                                    global.favorite + " " + global.button + " " + global.favorited
+                                                                    :
+                                                                    global.favorite + " " + global.button
+                                                                }`}
+                                                                onClick={(e)=>{
+                                                                    e.stopPropagation()
+                                                                    favoriteAction()
+                                                                }}
+                                                            />
                                                         </div>
                                                         :
                                                         <div className={page.infoRight}>
                                                             <Button onClick={()=>{sendRequest()}}>отправить запрос</Button>
+                                                            <Favorite
+                                                                className={`${ isFavorite
+                                                                    ?
+                                                                    global.favorite + " " + global.button + " " + global.favorited
+                                                                    :
+                                                                    global.favorite + " " + global.button
+                                                                }`}
+                                                                onClick={(e)=>{
+                                                                    e.stopPropagation()
+                                                                    favoriteAction()
+                                                                }}
+                                                            />
                                                         </div>
 
 
                                     }
+
                                 </div>
                                 <div className={page.additionalInfoSection}>
                                     <NavLink to={routes.IMAGES_PAGE_ROUTE + "?groupId="+id}>
@@ -344,6 +412,9 @@ const GroupPage = observer(() => {
                                         {`${groupFiles.filter(file=>{
                                             return file.fileType=="document"
                                         }).length} Документа (-ов)`}
+                                    </NavLink>
+                                    <NavLink to={routes.GROUP_MEMBERS_ROUT + "?groupId="+id}>
+                                        {`Участники`}
                                     </NavLink>
                                     {/*<NavLink to={routes.FRIENDS_ROUTE + "?id="+id}>
                                         Друзья {` ${friends.length}`}

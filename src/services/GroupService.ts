@@ -7,12 +7,30 @@ import {ICreateGroupModel} from "../types/ICreateGroupModel";
 import {GroupBelonging} from "../types/GroupBelonging";
 import {IRequestToGroup} from "../types/IRequestToGroup";
 import {GlobalService} from "./GlobalService";
+import {UserShortViewModel} from "../types/UserShortViewModel";
 export default class GroupService {
+    //изменение информации
+    static async ChangeInfo(groupId:number, groupName:string,isPublic:boolean){
+        return await api.post(`${consts.API_URL}/api/group/ChangeInfo`, {
+            groupId,groupName,isPublic
+        });
+    }
+    //изменение картинки
+    static async ChangeProfileImage(groupId: number, newImageId: number){
+        const res = await api.post(`/api/Group/ChangeGroupProfileImage?groupId=${groupId}&newImageId=${newImageId}`)
+        console.log(res.data)
+        console.log(res.status)
+        console.log(res.headers)
+
+    }
     static async GetGroup(groupId: number) {
         const response = await api.get<IGroup>(`${consts.API_URL}/api/group/${groupId}`)
         return response
     }
-
+    static async GetGroupMembers(groupId: number) {
+        const response = await api.get<UserShortViewModel[]>(`/api/group/GetGroupMembersByGroupId/${groupId}`)
+        return response
+    }
     static async FindGroups(search: string){
         return await api.get<IGroup[]>(`${consts.API_URL}/api/group/FindGroups?search=${search}`);
     }

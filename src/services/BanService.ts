@@ -27,9 +27,16 @@ export class BanService{
         })
         return res
     }
+    //забанить пользователя в группе
+    static async GroupBanUser(blockedUserId:number,groupId:number,reason:string|null, dateTo:Date|null){
+        const res = await  api.put("/api/Block/group", {
+            blockedUserId, groupId, reason
+        })
+        return res
+    }
     //получить черный список группы
-    static async GetGroupBans(userId:number){
-        const res = await api.get<IBannedUser[]>("/api/Block/group?groupId="+userId)
+    static async GetGroupBans(groupId:number){
+        const res = await api.get<IBannedUser[]>("/api/Block/group?groupId="+groupId)
         res.data.forEach(u=>{
             u.dateFrom=GlobalService.JsonDateStringToDateObj(u.dateFrom)
             u.dateTo=GlobalService.JsonDateStringToDateObj(u.dateTo)

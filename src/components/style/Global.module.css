@@ -96,6 +96,14 @@ body{
     display: inline-block;
     width: 40px;
     transform: translateY(13px);
+    cursor: pointer;
+}
+.ban{
+    fill: gray;
+    height: 40px;
+    display: inline-block;
+    width: 40px;
+    transform: translateY(13px);
 }
 .favorited{
     fill: gold;

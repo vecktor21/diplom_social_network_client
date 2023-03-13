@@ -23,6 +23,9 @@ import {log} from "util";
 import consts from "../../consts";
 import routes from "../../consts";
 import postStyle from "../style/Post.module.css";
+import {ReactComponent as Favorite} from "../assets/favorite-icon.svg";
+import FavoriteService from "../../services/FavoriteService";
+import {FavoriteType} from "../../types/FavoriteType";
 
 const ArticlePage = () => {
     const [article, setArticle] = useState({} as IArticle)
@@ -34,6 +37,7 @@ const ArticlePage = () => {
     const [isCommentReplyModalVisible, setIsCommentReplyModalVisible] = useState(false)
     const [isCommentFilesUploadModalVisible, setIsCommentFilesUploadModalVisible] = useState(false)
     const [filesToUpload, setFilesToUpload] = useState([] as File[])
+    const [isFavorite, setIsFavorite] = useState(false)
     const [newComment, setNewComment] = useState({
         articleId: 0,
         message: '',
@@ -44,6 +48,7 @@ const ArticlePage = () => {
 
     useEffect(()=>{
         fetchArticles()
+        fetchFavorite()
     },[])
 
     const fetchArticles = async ()=>{
@@ -61,6 +66,26 @@ const ArticlePage = () => {
 
     }
 
+    const favoriteAction = ()=>{
+        if(!userStore?.user){
+            return
+        }
+        if(!isFavorite){
+            FavoriteService.SetFavoriteArticle(userStore?.user.userId, Number(params.articleId))
+            setIsFavorite(true)
+        }else{
+
+            FavoriteService.RemoveFavoriteArticle(userStore?.user.userId, Number(params.articleId))
+            setIsFavorite(false)
+        }
+    }
+    const fetchFavorite=async()=>{
+        if(!userStore?.user){
+            return
+        }
+        const res = await FavoriteService.IsFavorite(userStore?.user.userId, Number(params.articleId), FavoriteType.Article)
+        setIsFavorite(res)
+    }
     //обработка лайков
     const likeHandler = async ()=>{
         if(userStore?.isAuth){
@@ -154,7 +179,7 @@ const ArticlePage = () => {
                                 <div>
                                     статья: {article.title}
                                 </div>
-                                <div className={global.date}>
+                                <div >
                                     дата публикации:
                                     {article.publicationDate.getFullYear()}.
                                     {article.publicationDate.getMonth()+1}.
@@ -168,6 +193,18 @@ const ArticlePage = () => {
                                         isLiked &&
                                         global.liked
                                         }`}/>
+                                    <Favorite
+                                        className={`${ isFavorite
+                                            ?
+                                            global.favorite + " " + global.button + " " + global.favorited
+                                            :
+                                            global.favorite + " " + global.button
+                                        }`}
+                                        onClick={(e)=>{
+                                            e.stopPropagation()
+                                            favoriteAction()
+                                        }}
+                                    />
                                 </div>
                                 <div>
                                     ключевые слова:

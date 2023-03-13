@@ -63,22 +63,8 @@ export default class UserService {
 
 
 
-    static GetFavorites(userId:number):IFavorite[]{
-        return [
-            {
-                ObjectType: "Article",
-                FavoriteId: 31,
-                ObjectId: Math.floor(Math.random()*3),
-                UserId: userId
-            }
-        ]
-    }
     static async GetUsers(): Promise<AxiosResponse<IUser[]>>{
         const response = await api.get("/api/user/users")
         return response
-    }
-    //todo
-    static AddToFavorites(userId:number,objectId:number, objectType:ObjectTypes){
-
     }
 }

@@ -14,7 +14,6 @@ import UserOptionsPage from "./components/Pages/UserOptionsPage";
 import UserBlackListPage from "./components/Pages/UserBlackListPage";
 import GroupsPage from "./components/Pages/GroupsPage";
 import GroupPage from "./components/Pages/GroupPage";
-import GroupBlackListPage from "./components/Pages/GroupBlackListPage";
 import ImagesPage from "./components/Pages/ImagesPage";
 import VideosPage from "./components/Pages/VideosPage";
 import DocumentsPage from "./components/Pages/DocumentsPage";
@@ -27,6 +26,7 @@ import ArticlePagePage from "./components/Pages/ArticlePagePage";
 import ArticlePageCreatePage from "./components/Pages/ArticlePageCreatePage";
 import ArticleUpdatePage from "./components/Pages/ArticleUpdatePage";
 import ArticlePageUpdatePage from "./components/Pages/ArticlePageUpdatePage";
+import GroupMemberPage from "./components/Pages/GroupMemberPage";
 
 export const AdminRoutes: IRoute[] = [
     {
@@ -130,8 +130,8 @@ export const PublicRoutes: IRoute[] = [
         component: <DocumentsPage/>
     },
     {
-        path: routes.GROUP_BLACK_LIST_ROUTE,
-        component: <GroupBlackListPage/>
+        path: routes.GROUP_MEMBERS_ROUT,
+        component: <GroupMemberPage/>
     },
     {
         path: routes.ARTICLE_ROUTE,

@@ -11,6 +11,7 @@ import img from ".././Placeholders/imgPlaceholder.png"
 import {NavLink, useNavigate} from "react-router-dom";
 import AuthService from "../services/AuthService";
 import Notifications from "./Notifications";
+import MainSearchComponent from "./MainSearchComponent";
 
 
 const Header = observer(() => {
@@ -27,10 +28,7 @@ const Header = observer(() => {
     return (
         <div className={header.header}>
             <div className={global.contentContainer + " " + header.content}>
-                <div className={global.searchBlock}>
-                    <Logo id="find" className={global.find}/>
-                    <input type="text" placeholder="поиск"/>
-                </div>
+                <MainSearchComponent/>
                 {userStore?.isAuth
                 ?
                 <div className={header.profileBlock}>

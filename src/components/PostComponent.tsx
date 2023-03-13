@@ -8,7 +8,7 @@ import image from './style/Image.module.css'
 import ImageViewer from 'react-simple-image-viewer';
 import {ReactComponent as Like} from './assets/heart-icon.svg'
 import {ReactComponent as Comment} from './assets/comment-icon.svg'
-import {ReactComponent as Share} from './assets/share-icon.svg'
+import {ReactComponent as Favorite} from './assets/favorite-icon.svg'
 import {IAuthorInfo} from "../types/IAuthorInfo";
 import {Context} from "../index";
 import {useNavigate} from "react-router-dom";
@@ -20,6 +20,8 @@ import postStyle from "./style/Post.module.css";
 import LikeService from "../services/LikeService";
 import {Size} from "../types/Size";
 import ProfileImage from "./UI/ProfileImage";
+import FavoriteService from "../services/FavoriteService";
+import {FavoriteType} from "../types/FavoriteType";
 
 interface Props {
     post: IPost
@@ -35,7 +37,7 @@ const PostComponent : FC<Props> = observer((props) => {
     const [isViewerOpen, setIsViewerOpen] = useState(false);
     const [commentCount, setCommentCount] = useState(0)
     const [isLiked, setIsLiked] = useState(false)
-
+    const [isFavorite, setIsFavorite] = useState(false)
 
     let comments = 0
 
@@ -72,10 +74,6 @@ const PostComponent : FC<Props> = observer((props) => {
         console.log(commentCount)
         navigate(routes.POST_ROUTE + `?postId=${props.post.postId}&postType=${props.post.postType}`)
     }
-    //todo
-    const shareAction = ()=>{
-        alert("репостнул")
-    }
     //итерирование комментариев чтобы вывести их красиво
     // @ts-ignore
     const iterateComments =  (comment: IComment) : number => {
@@ -97,10 +95,31 @@ const PostComponent : FC<Props> = observer((props) => {
         })
         //проверка - лайкнул ли текущий пользователь пост
         setIsLiked(LikeService.IsLiked(userStore?.user.userId, props.post.likes))
+        fetchFavorite()
 
     }, [])
     useEffect(()=>setCommentCount(comments), [comments])
+    const fetchFavorite=async()=>{
+        if(!userStore?.user){
+            return
+        }
+        const res = await FavoriteService.IsFavorite(userStore?.user.userId, props.post.postId, FavoriteType.Post)
+        setIsFavorite(res)
+    }
 
+    const favoriteAction = ()=>{
+        if(!userStore?.user){
+            return
+        }
+        if(!isFavorite){
+            FavoriteService.SetFavoritePost(userStore?.user.userId, props.post.postId)
+            setIsFavorite(true)
+        }else{
+
+            FavoriteService.RemoveFavoritePost(userStore?.user.userId, props.post.postId)
+            setIsFavorite(false)
+        }
+    }
     return (
         <div className={post.post}><div className={postStyle.authorInfo} onClick={()=>{navigate( props.post.postType =="user"? consts.USER_PAGE_ROUTE  + "?id=" + props.post.author.authorId : consts.GROUP_ROUTE + "?id=" + props.post.author.authorId)}}>
                 <div >
@@ -171,8 +190,8 @@ const PostComponent : FC<Props> = observer((props) => {
                 } <Comment className={global.comment}/></div>
                 <div
                     className={global.button}
-                    onClick={()=>{shareAction()}}
-                ><Share className={global.comment}/></div>
+                    onClick={()=>{favoriteAction()}}
+                ><Favorite className={global.favorite + " " +( isFavorite?global.favorited:"")}/></div>
             </div>
         </div>
     );

@@ -9,11 +9,13 @@ import {useNavigate} from "react-router-dom";
 import style from "./style/Ban.module.css"
 import {BanService} from "../services/BanService";
 import {Context} from "../index";
+import {AxiosResponse} from "axios";
 
 interface Props{
     BannedUser:IBannedUser,
-    setIsLoading: (v:boolean)=>void
-    setIsError: (v:boolean)=>void
+    setIsLoading: (v:boolean)=>void,
+    setIsError: (v:boolean)=>void,
+    groupId?: number
 }
 const BannedUserComponent : FC<Props>= (props) => {
     const navigate = useNavigate()
@@ -26,10 +28,18 @@ const BannedUserComponent : FC<Props>= (props) => {
         props.setIsLoading(true)
         props.setIsError(false)
         try {
-            const res = await BanService.RemoveFromUserBlockList(userStore?.user.userId, props.BannedUser.blockedUserId)
-            console.log(res)
-            if(res.status==200){
-                window.alert("успех")
+            if(props.groupId){
+                 const res = await BanService.RemoveFromGroupBlockList(props.groupId, props.BannedUser.blockedUserId)
+                console.log(res)
+                if(res.status==200){
+                    window.alert("успех")
+                }
+            }else{
+                const res = await BanService.RemoveFromUserBlockList(userStore.user.userId, props.BannedUser.blockedUserId)
+                console.log(res)
+                if(res.status==200){
+                    window.alert("успех")
+                }
             }
         }catch (e) {
             props.setIsError(true)

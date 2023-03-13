@@ -3,14 +3,15 @@ import {IFriend} from "../types/IFriend";
 import api from "./AxiosService";
 import {IFriendRequest} from "../types/IFriendRequest";
 import {IFriendRequestResponse} from "../types/IFriendRequestResponse";
+import {UserShortViewModel} from "../types/UserShortViewModel";
 
 export class FriendsService {
     static async GetFriends(userId: number) {
-        const result = await api.get<IFriend[]>("/api/friends?userId="+userId)
+        const result = await api.get<UserShortViewModel[]>("/api/friends?userId="+userId)
         return result
     }
     static async FindFriends(search: string) {
-        const result = await api.get<IFriend[]>("/api/friends/FindUsers?search="+search)
+        const result = await api.get<UserShortViewModel[]>("/api/friends/FindUsers?search="+search)
         return result.data
     }
     static async CreateFriendRequest(request: IFriendRequest) {

@@ -35,6 +35,7 @@ import MessageComponent from "../MessageComponent";
 import {MessengerService} from "../../services/MessengerService";
 import {ICreateChatRoomModel} from "../../types/ICreateChatRoomModel";
 import {BanService} from "../../services/BanService";
+import {UserShortViewModel} from "../../types/UserShortViewModel";
 
 const UserPage = observer(() => {
     //пользователь, на странице которого находимся
@@ -44,9 +45,9 @@ const UserPage = observer(() => {
     const [searchParams] = useSearchParams()
     //айди пользователя, на странице которого находимся
     let id = Number(searchParams.get("id"))
-    const {userStore, userFavoritesStore} = useContext(Context)
+    const {userStore} = useContext(Context)
     const [userInfo, setUserInfo] = useState({} as IUserInfo)
-    const [friends, setFriends] = useState([] as IFriend[])
+    const [friends, setFriends] = useState([] as UserShortViewModel[])
     const [groups, setGroups] = useState([] as IGroup[])
     const [chatRoomId, setChatRoomId] = useState(0)
     const [userFiles, setUserFiles] = useState([] as IFile[])
@@ -103,12 +104,6 @@ const UserPage = observer(() => {
             setUser(userStore?.user)
             //дублируем состояние текущего пользователя во временную переменную
             temp_user = userStore?.user
-            //загрузка избранного
-            //происходит только в том случае, если мы авторизованы
-            if(userStore?.user.userId != undefined || userStore?.user.userId != null){
-                const favsResponse = UserService.GetFavorites(userStore?.user.userId)
-                userFavoritesStore?.setFavorites(favsResponse)
-            }
         }
         //если текущая страница - НЕ моя:
         else {
