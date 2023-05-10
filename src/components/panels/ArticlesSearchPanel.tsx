@@ -7,16 +7,21 @@ import {observer} from "mobx-react-lite";
 import {ReactComponent as Logo} from "../assets/find-icon.svg";
 import global from "../style/Global.module.css";
 import LoadingComponent from "../UI/LoadingComponent";
+import {IPaginationParams} from "../../types/IPaginationParams";
+import PagesPaginationComponent from "../UI/PagesPaginationComponent";
 const ArticlesSearchPanel = observer(() => {
     const [searchText, setSearchText] = useState("")
     const [articles, setArticles] = useState([] as IArticle[])
+    const [pagination, setPagination] = useState({} as IPaginationParams)
     const [isLoading, setIsLoading] = useState(false)
 
-    const searchArticles = async ()=>{
+    const searchArticles = async (page:number)=>{
         setIsLoading(true)
         try{
-            const searchResponse = await ArticlesService.SearchArticles(searchText)
-            setArticles(searchResponse.data)
+            const searchResponse = await ArticlesService.SearchArticles(searchText,page,3)
+            console.log(searchResponse.status)
+            setArticles(searchResponse.data.values)
+            setPagination(searchResponse.data.paginationParams)
         }catch(e){
             console.log(e);
             
@@ -29,14 +34,14 @@ const ArticlesSearchPanel = observer(() => {
         <div>
             <div className={global.pageArticle}>Поиск статей</div>
             <div className={global.searchBlockInSection + " " + global.searchBlock}>
-                <Logo id="find" className={global.find} onClick={searchArticles}/>
+                <Logo id="find" className={global.find} onClick={()=>{searchArticles(1)}}/>
                 <input
                     value={searchText}
                     placeholder={"поиск"}
                     onChange={(e)=>{setSearchText(e.target.value)}}
                     onKeyDown={(e)=>{
                         if(e.key.toLowerCase()=="enter"){
-                            searchArticles()
+                            searchArticles(1)
                         }
                     }}
                 />
@@ -56,6 +61,10 @@ const ArticlesSearchPanel = observer(() => {
                                 {articles.map(a=>
                                     <ArticleObjectComponent article={a} key={a.articleId}></ArticleObjectComponent>
                                 )}
+                                <PagesPaginationComponent
+                                    totalPages={pagination.totalPages}
+                                    currentPage={pagination.page}
+                                    onPageClick={searchArticles}/>
                             </div>
                     }
                 </div>

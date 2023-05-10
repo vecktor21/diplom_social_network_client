@@ -26,6 +26,7 @@ export default  {
     ARTICLE_NAVIGATION_ROUTE: "/article",
     ARTICLES_ROUTE: "/articles",
     POST_ROUTE: "/post",
+    SEARCH_ROUT:"/search",
     API_URL: "https://localhost:7021",
     API_CHAT_HUB_URL: "https://localhost:7021/chat"
 };

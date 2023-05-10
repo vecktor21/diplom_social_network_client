@@ -242,15 +242,15 @@ const ArticlePage = () => {
                             </div>
                             <div>
                                 <div>страницы:</div>
-                                <ul style={{listStyleType: "none"}}>
+                                <div  className={global.paginationPages}>
                                     {article.articlePages.map((page, index)=>
-                                        <li key={page} style={{color: "blue", cursor: "pointer"}}
+                                        <div key={page}
                                             onClick={()=>{
                                                 navigate(`${consts.ARTICLE_NAVIGATION_ROUTE}/${article.articleId}/${page}`)
                                             }}
-                                        >{index+1}</li>
+                                        >{index+1}</div>
                                     )}
-                                </ul>
+                                </div>
                             </div>
                             <div>
                                 <div

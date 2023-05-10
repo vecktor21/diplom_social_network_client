@@ -8,6 +8,7 @@ import {GroupBelonging} from "../types/GroupBelonging";
 import {IRequestToGroup} from "../types/IRequestToGroup";
 import {GlobalService} from "./GlobalService";
 import {UserShortViewModel} from "../types/UserShortViewModel";
+import {PaginatedResponse} from "../types/PaginatedResponse";
 export default class GroupService {
     //изменение информации
     static async ChangeInfo(groupId:number, groupName:string,isPublic:boolean){
@@ -31,8 +32,13 @@ export default class GroupService {
         const response = await api.get<UserShortViewModel[]>(`/api/group/GetGroupMembersByGroupId/${groupId}`)
         return response
     }
-    static async FindGroups(search: string){
-        return await api.get<IGroup[]>(`${consts.API_URL}/api/group/FindGroups?search=${search}`);
+    static async FindGroups(search: string, page?:number,take?:number){
+        if(page!=undefined&&take!=undefined){
+            return await api.get<PaginatedResponse<IGroup>>(`/api/group/FindGroups?searchString=${search}&page=${page}&take=${take}`)
+
+        }else{
+            return await api.get<PaginatedResponse<IGroup>>(`/api/group/FindGroups?searchString=${search}`);
+        }
     }
     static async CreateGroup(group: ICreateGroupModel){
         return await api.post(`${consts.API_URL}/api/group/creategroup`, group);

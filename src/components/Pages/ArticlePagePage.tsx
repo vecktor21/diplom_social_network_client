@@ -20,6 +20,7 @@ import {CommentService} from "../../services/CommentService";
 import {Context} from "../../index";
 import {IArticlePageCommentCreateModel} from "../../types/IArticlePageCommentCreateModel";
 import routes from "../../consts";
+import PagesPaginationComponent from "../UI/PagesPaginationComponent";
 
 const ArticlePagePage = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -159,7 +160,7 @@ const ArticlePagePage = () => {
                                         {articlePage.articleTitle}
                                     </span>
                                 </div>
-                                <div className={global.date}>
+                                <div >
                                     дата публикации:
                                     {articlePage.publicationDate.getFullYear()}.
                                     {articlePage.publicationDate.getMonth()+1}.
@@ -193,16 +194,16 @@ const ArticlePagePage = () => {
                             </div>
                             <div>
                                 <div>страницы:</div>
-                                <ul style={{listStyleType: "none"}}>
+                                <div className={global.paginationPages}>
                                     {articlePage.articlePages.map((page, index)=>
-                                        <li key={index} style={{color: "blue", cursor: "pointer", fontWeight: `${page==articlePage.articlePageId ? "bold": "normal"}`}}
+                                        <div key={index} style={{fontWeight: `${page==articlePage.articlePageId ? "bold": "normal"}`}}
                                             onClick={()=>{
                                                 navigate(`${consts.ARTICLE_NAVIGATION_ROUTE}/${articlePage.articleId}/${page}`)
                                                 window.location.reload();
                                             }}
-                                        >{index+1}</li>
+                                        >{index+1}</div>
                                     )}
-                                </ul>
+                                </div>
                             </div>
                             <div>
                                 <div

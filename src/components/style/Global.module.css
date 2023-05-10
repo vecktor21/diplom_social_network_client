@@ -82,7 +82,7 @@ body{
 }
 .comment{
     height: 40px;
-    fill: #d4d7db;
+    fill: #c2c4c9;
     transform: translateY(13px);
 }
 .button{
@@ -282,4 +282,14 @@ body{
     box-sizing: border-box;
     margin: 5px 10px 5px 5px;
     fill: #4d6da9;
+}
+
+.paginationPages{
+    display: flex;
+    cursor: pointer;
+    color: blue;
+    justify-content: left;
+}
+.paginationPages div{
+    margin-right: 10px;
 }

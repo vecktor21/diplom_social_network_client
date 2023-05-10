@@ -34,8 +34,8 @@ const PostPage = observer(() => {
     const postId = Number(params.get("postId"))
     const postType = params.get("postType")
     const [isError, setIsError] = useState(false)
-    const [post, setPost] = useState({author: {img: ""}, publicationDate: new Date(), postAttachments: [] as IAttachment[]} as IPost)
     const [isLoading, setIsLoading] = useState(true)
+    const [post, setPost] = useState({author: {img: ""}, publicationDate: new Date(), postAttachments: [] as IAttachment[]} as IPost)
     const [currentImage, setCurrentImage] = useState(0);
     const [isViewerOpen, setIsViewerOpen] = useState(false);
     const [commentCount, setCommentCount] = useState(0)

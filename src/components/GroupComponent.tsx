@@ -16,6 +16,7 @@ const GroupComponent: FC<Props> = (props) => {
         <div
             className={style.card}
             onClick={()=>{navigate(routes.GROUP_ROUTE + "?id="+props.Group.groupId)}}
+            title={props.Group.groupName}
         >
             <ProfileImage src={consts.API_URL + props.Group.groupImage} size={Size.medium}/>
             <div className={style.name}>

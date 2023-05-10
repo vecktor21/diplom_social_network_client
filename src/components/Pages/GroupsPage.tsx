@@ -10,6 +10,8 @@ import {ReactComponent as Logo} from "../assets/find-icon.svg";
 import consts from "../../consts";
 import GroupService from "../../services/GroupService";
 import GroupCreateModalComponent from "../GroupCreateModalComponent";
+import {IPaginationParams} from "../../types/IPaginationParams";
+import PagesPaginationComponent from "../UI/PagesPaginationComponent";
 
 const GroupsPage = observer(() => {
     const [params] = useSearchParams()
@@ -17,6 +19,7 @@ const GroupsPage = observer(() => {
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [groups, setGroups] = useState([] as IGroup[])
+    const [pagination, setPagination] = useState({} as IPaginationParams)
     const [searchText, setSearchText] = useState("")
     const [isSearchLoading, setIsSearchLoading] = useState(false)
     const [foundGroups, setFoundGroups] = useState([] as IGroup[])
@@ -48,11 +51,12 @@ const GroupsPage = observer(() => {
         }
         setIsLoading(false)
     }
-    const searchGroups = ()=>{
+    const searchGroups = (page:number)=>{
         setIsSearchLoading(true)
-        GroupService.FindGroups(searchText)
+        GroupService.FindGroups(searchText,page,4)
             .then(res=>{
-                setFoundGroups(res.data)
+                setFoundGroups(res.data.values)
+                setPagination(res.data.paginationParams)
                 //console.log(data)
                 setIsSearchLoading(false)
             })
@@ -71,14 +75,14 @@ const GroupsPage = observer(() => {
                         position: "relative"
                     }}>
                         <div className={global.searchBlockInSection + " " + global.searchBlock}>
-                            <Logo id="find" className={global.find} onClick={searchGroups}/>
+                            <Logo id="find" className={global.find} onClick={()=>{searchGroups(1)}}/>
                             <input
                                 value={searchText}
                                 placeholder={"поиск групп"}
                                 onChange={(e)=>{setSearchText(e.target.value)}}
                                 onKeyDown={(e)=>{
                                     if(e.key.toLowerCase()=="enter"){
-                                        searchGroups()
+                                        searchGroups(1)
                                     }
                                 }}
                             />
@@ -95,13 +99,12 @@ const GroupsPage = observer(() => {
                                         :
                                         <div>
                                             {foundGroups.map(a=>
-                                                <div key={a.groupId}
-                                                     onClick={()=>{navigate(consts.GROUP_ROUTE + "?id=" + a.groupId)}}
-                                                >
-                                                    {/*<ProfileImage src={`${consts.API_URL}/${a.profileImage}`} size={Size.small}/>*/}
-                                                    {`${a.groupName} ${a.isPublic ? "публичная группа" : "приватная группа"}`}
-                                                </div>
+                                                <GroupComponent Group={a} key={a.groupId}/>
                                             )}
+                                            <PagesPaginationComponent
+                                                totalPages={pagination.totalPages}
+                                                currentPage={pagination.page}
+                                                onPageClick={searchGroups}/>
                                         </div>
                                 }
                             </div>
@@ -123,7 +126,8 @@ const GroupsPage = observer(() => {
                         ?
                             <div  >вы еще не подписаны ни на одну группу. используйте поиск чтобы найти интерисуюущие вас группы</div>
                         :
-                            <div className={global.gridView} >
+                            <div className={global.gridView} style={{borderTop:"3px solid #4d6da9", marginTop:"10px"}}>
+
                                 {groups.map(group=>
                                     <GroupComponent Group={group} key={group.groupId}/>
                                 )}

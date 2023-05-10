@@ -4,24 +4,24 @@ import {ICountry} from "./ICountry";
 import {IUserInfoPrivacyType} from "./IUserInfoPrivacyType";
 
 export class RegisterModel implements IRegisterModel {
-    login = "test"
-    email = "test@mail.ru"
-    nickname = "test"
-    name = "test"
-    surname = "test"
-    password = "123456"
-    confirmPassword = "123456"
+    login = ""
+    email = ""
+    nickname = ""
+    name = ""
+    surname = ""
+    password = ""
+    confirmPassword = ""
     userInfo = {
-        age: 1,
+        age: 0,
         dateOfBirth: "",
-        city: "test",
+        city: "",
         country: {
             countryID : 1,
             countryNameEn:"",
             countryNameRu:""
         },
-        status: "test",
-        education: "test",
+        status: "",
+        education: "",
         userInfoPrivacyType: {
             userInfoPrivacyTypeId : 0,
             userInfoPrivacyTypeName: "PublicPage"

@@ -27,6 +27,7 @@ import ArticlePageCreatePage from "./components/Pages/ArticlePageCreatePage";
 import ArticleUpdatePage from "./components/Pages/ArticleUpdatePage";
 import ArticlePageUpdatePage from "./components/Pages/ArticlePageUpdatePage";
 import GroupMemberPage from "./components/Pages/GroupMemberPage";
+import SearchPage from "./components/Pages/SearchPage";
 
 export const AdminRoutes: IRoute[] = [
     {
@@ -168,5 +169,10 @@ export const PublicRoutes: IRoute[] = [
     {
         path: routes.POST_ROUTE,
         component: <PostPage/>
+    },
+
+    {
+        path: routes.SEARCH_ROUT,
+        component: <SearchPage/>
     }
 ]

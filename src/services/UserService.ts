@@ -17,6 +17,8 @@ import {IUserInfoPrivacyType} from "../types/IUserInfoPrivacyType";
 import api from "./AxiosService";
 import consts from "../consts";
 import {GlobalService} from "./GlobalService";
+import {PaginatedResponse} from "../types/PaginatedResponse";
+import {UserShortViewModel} from "../types/UserShortViewModel";
 
 export default class UserService {
     static async GetUser(userId: number){
@@ -51,7 +53,6 @@ export default class UserService {
         console.log(res.data)
         console.log(res.status)
         console.log(res.headers)
-
     }
 
 
@@ -60,11 +61,26 @@ export default class UserService {
         return await api.get<IGroup[]>(`${consts.API_URL}/api/Group/getUserGroups/${userId}`);
     }
 
+    static async SaveRoleStatusChanges(userId:number, role:string, status:string ){
+        console.log(userId, role, status)
+        api.post(`${consts.API_URL}/api/User/SaveChanges?userId=${userId}&role=${role}&status=${status}`);
+    }
 
-
-
-    static async GetUsers(): Promise<AxiosResponse<IUser[]>>{
-        const response = await api.get("/api/user/users")
+    static async GetUsers(){
+        const response = await api.get<IUser[]>("/api/user/users")
+        response.data.forEach(u=>{
+            u.statusFrom = GlobalService.JsonDateStringToDateObj(u.statusFrom)
+        })
         return response
+    }
+
+    static async FindUsers(searchString:string, page?:number,take?:number){
+        if(page!=undefined&&take!=undefined){
+            const response = await api.get<PaginatedResponse<UserShortViewModel>>(`/api/user/FindUsers?searchString=${searchString}&page=${page}&take=${take}`)
+            return response
+        }else{
+            const response = await api.get<PaginatedResponse<UserShortViewModel>>(`/api/user/FindUsers?searchString=${searchString}`)
+            return response
+        }
     }
 }

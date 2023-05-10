@@ -4,6 +4,8 @@ import api from "./AxiosService";
 import {IArticleCreateModel} from "../types/IArticleCreateModel";
 import {IArticleUpdateModel} from "../types/IArticleUpdateModel";
 import {GlobalService} from "./GlobalService";
+import {PaginatedResponse} from "../types/PaginatedResponse";
+import {IGroup} from "../types/IGroup";
 
 export default class ArticlesService {
     //получить статью по айди
@@ -36,12 +38,22 @@ export default class ArticlesService {
         return result
     }
     //поиск статей
-    static async SearchArticles(query: string){
-        const result = await api.get<IArticle[]>(`/api/Articles/SearchArticles?query=${query}`)
-        result.data.forEach(article=>{
-            article.publicationDate =GlobalService.JsonDateStringToDateObj(article.publicationDate)
-        })
-        return result
+    static async SearchArticles(search: string, page?:number,take?:number){
+        if(page!=undefined&&take!=undefined){
+
+            const result = await api.get<PaginatedResponse<IArticle>>(`/api/Articles/SearchArticles?query=${search}&page=${page}&take=${take}`)
+            result.data.values.forEach(article=>{
+                article.publicationDate =GlobalService.JsonDateStringToDateObj(article.publicationDate)
+            })
+            return result
+        }else{
+
+            const result = await api.get<PaginatedResponse<IArticle>>(`/api/Articles/SearchArticles?query=${search}`)
+            result.data.values.forEach(article=>{
+                article.publicationDate =GlobalService.JsonDateStringToDateObj(article.publicationDate)
+            })
+            return result
+        }
     }
     
     //создание статьи

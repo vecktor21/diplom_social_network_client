@@ -162,7 +162,7 @@ const PostComponent : FC<Props> = observer((props) => {
                     />
                 }
             </div>
-            <div>
+            <div style={{display:"flex", flexDirection:"column"}}>
                 {props.post.postAttachments.filter(att=>att.fileType!="image").map((attachment, index) => (
                     <a key={attachment.attachmentId} target="_blank" href={consts.API_URL + attachment.fileLink}>{attachment.fileName}</a>
                 ))}
